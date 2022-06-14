@@ -1,8 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+
 pd.set_option('display.max_columns', 4)
 
-#%%  1. Inner join
+# %%  1. Inner join
 census = pd.read_pickle('data/06/census.p')
 wards = pd.read_pickle('data/06/ward.p')
 
@@ -22,7 +23,7 @@ wards_census = wards.merge(census, on="ward", suffixes=('_ward', '_cen'))
 wards_census.head()
 wards_census.shape
 
-#%%  1.1 Inner join - taxi
+# %%  1.1 Inner join - taxi
 taxi_owners = pd.read_pickle('data/06/taxi_owners.p')
 taxi_veh = pd.read_pickle('data/06/taxi_vehicles.p')
 
@@ -31,14 +32,14 @@ taxi_own_veh = taxi_owners.merge(taxi_veh, on='vid', suffixes=('_own', '_veh'))
 
 taxi_own_veh['fuel_type'].value_counts()
 
-#%%  2. One-to-many relationships
+# %%  2. One-to-many relationships
 
 licenses = pd.read_pickle('data/06/licenses.p')
 ward_licenses = wards.merge(licenses, on='ward', suffixes=('_ward', '_lic'))
 ward_licenses.head()
 ward_licenses.shape
 
-#%%  2.1 One-to-many relationships
+# %%  2.1 One-to-many relationships
 
 biz_owners = pd.read_pickle('data/06/business_owners.p')
 
@@ -54,7 +55,7 @@ sorted_df = counted_df.sort_values('account', ascending=False)
 # Use .head() method to print the first few rows of sorted_df
 print(sorted_df.head())
 
-#%% 3. Merging multiple DataFrames
+# %% 3. Merging multiple DataFrames
 
 # grants_licenses_ward = grants.merge(licenses, on=['address', 'zip']) \
 #    .merge(wards, on='ward', suffixes=('_bis', '_ward'))
@@ -78,20 +79,33 @@ print(sorted_df.head())
 zip_demo = pd.read_pickle('data/06/zip_demo.p')
 
 # Merge licenses and zip_demo, on zip; and merge the wards on ward
-licenses_zip_ward = licenses.merge(zip_demo, on='zip')\
+licenses_zip_ward = licenses.merge(zip_demo, on='zip') \
     .merge(wards, on='ward')
 
 # Print the results by alderman and show median income
-print(licenses_zip_ward.groupby('alderman').agg({'income':'median'}))
+print(licenses_zip_ward.groupby('alderman').agg({'income': 'median'}))
 
-#%% 3.1 One-to-many merge with multiple tables
+# %% 3.1 One-to-many merge with multiple tables
 land_use = pd.read_pickle('data/06/land_use.p')
 
-land_cen_lic = land_use.merge(census, on='ward')\
+land_cen_lic = land_use.merge(census, on='ward') \
     .merge(licenses, on='ward', suffixes=('_cen', '_lic'))
 
 pop_vac_lic = land_cen_lic.groupby(['ward', 'pop_2010', 'vacant'],
-                                   as_index=False).agg({'account':'count'})
+                                   as_index=False).agg({'account': 'count'})
 
 sorted_pop_vac_lic = pop_vac_lic.sort_values(['vacant', 'account', 'pop_2010'],
                                              ascending=[False, True, False])
+
+#%% 4. Left join
+movies = pd.read_pickle('data/06/movies.p')
+taglines = pd.read_pickle('data/06/taglines.p')
+
+movies.head()
+movies.shape
+
+taglines.head()
+taglines.shape
+
+movies_taglines = movies.merge(taglines, on='id', how='left')
+movies_taglines.head()

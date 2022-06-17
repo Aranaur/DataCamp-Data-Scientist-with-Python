@@ -22,3 +22,28 @@ austin_weather["MONTH"] = month
 austin_weather.head()
 
 # %% 1. Introduction to Matplotlib
+
+# %%
+fig, ax = plt.subplots()
+plt.show()
+
+# %%
+seattle_weather["MONTH"]
+seattle_weather["MLY-TAVG-NORMAL"]
+
+# %%
+plt.plot(seattle_weather["MONTH"], seattle_weather["MLY-TAVG-NORMAL"])
+plt.show()
+
+# %%
+plt.plot(seattle_weather["MONTH"], seattle_weather["MLY-TAVG-NORMAL"])
+plt.plot(austin_weather["MONTH"], austin_weather["MLY-TAVG-NORMAL"])
+plt.show()
+
+# %%
+fig, ax = plt.subplots()
+ax.plot(seattle_weather["MONTH"], seattle_weather["MLY-TAVG-NORMAL"])
+ax.plot(austin_weather["MONTH"], austin_weather["MLY-TAVG-NORMAL"])
+plt.show()
+
+# %% 1.1 Customizing your plots

@@ -47,3 +47,61 @@ ax.plot(austin_weather["MONTH"], austin_weather["MLY-TAVG-NORMAL"])
 plt.show()
 
 # %% 1.1 Customizing your plots
+
+fig, ax = plt.subplots()
+ax.plot(seattle_weather["MONTH"], seattle_weather["MLY-TAVG-NORMAL"], marker='o', linestyle='--', color='g')
+ax.plot(austin_weather["MONTH"], austin_weather["MLY-TAVG-NORMAL"], marker='v', linestyle='None', color='r')
+ax.set_xlabel('Time (months)')
+ax.set_ylabel('Average temp. (Fahrenheit degree)')
+ax.set_title('Weather in Seattle')
+plt.show()
+
+# %% 1.2 Small multiples
+
+fig, ax = plt.subplots()
+ax.plot(seattle_weather["MONTH"], seattle_weather["MLY-PRCP-NORMAL"], color='b')
+ax.plot(seattle_weather["MONTH"], seattle_weather["MLY-PRCP-25PCTL"], color='b', linestyle='--')
+ax.plot(seattle_weather["MONTH"], seattle_weather["MLY-PRCP-75PCTL"], color='b', linestyle='--')
+ax.plot(seattle_weather["MONTH"], austin_weather["MLY-PRCP-NORMAL"], color='r')
+ax.plot(seattle_weather["MONTH"], austin_weather["MLY-PRCP-25PCTL"], color='r', linestyle='--')
+ax.plot(seattle_weather["MONTH"], austin_weather["MLY-PRCP-75PCTL"], color='r', linestyle='--')
+ax.set_xlabel('Time (months)')
+ax.set_ylabel('Precipitation (inches)')
+plt.show()
+
+fig, ax = plt.subplots(2, 1, sharey=True)
+ax[0].plot(seattle_weather["MONTH"], seattle_weather["MLY-PRCP-NORMAL"], color='b')
+ax[0].plot(seattle_weather["MONTH"], seattle_weather["MLY-PRCP-25PCTL"], color='b', linestyle='--')
+ax[0].plot(seattle_weather["MONTH"], seattle_weather["MLY-PRCP-75PCTL"], color='b', linestyle='--')
+ax[1].plot(seattle_weather["MONTH"], austin_weather["MLY-PRCP-NORMAL"], color='r')
+ax[1].plot(seattle_weather["MONTH"], austin_weather["MLY-PRCP-25PCTL"], color='r', linestyle='--')
+ax[1].plot(seattle_weather["MONTH"], austin_weather["MLY-PRCP-75PCTL"], color='r', linestyle='--')
+ax[1].set_xlabel('Time (months)')
+ax[0].set_ylabel('Precipitation (inches)')
+ax[1].set_ylabel('Precipitation (inches)')
+plt.show()
+
+# %%
+# Create a Figure and an array of subplots with 2 rows and 2 columns
+fig, ax = plt.subplots(2, 2)
+
+# Addressing the top left Axes as index 0, 0, plot month and Seattle precipitation
+ax[0, 0].plot(seattle_weather["MONTH"], seattle_weather["MLY-PRCP-NORMAL"])
+
+# In the top right (index 0,1), plot month and Seattle temperatures
+ax[0, 1].plot(seattle_weather["MONTH"], seattle_weather["MLY-TAVG-NORMAL"])
+
+# In the bottom left (1, 0) plot month and Austin precipitations
+ax[1, 0].plot(austin_weather["MONTH"], austin_weather["MLY-PRCP-NORMAL"])
+
+# In the bottom right (1, 1) plot month and Austin temperatures
+ax[1, 1].plot(austin_weather["MONTH"], austin_weather["MLY-TAVG-NORMAL"])
+plt.show()
+
+# %%
+
+# Create a figure and an array of axes: 2 rows, 1 column with shared y axis
+fig, ax = plt.subplots(2, 1, sharey=True)
+
+# %% 2. Plotting time-series data
+

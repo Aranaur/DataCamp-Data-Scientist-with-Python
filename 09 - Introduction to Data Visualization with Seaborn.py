@@ -43,3 +43,31 @@ plt.show()
 
 sns.countplot(y=region)
 plt.show()
+
+# %% 1.1 Using pandas with Seaborn
+
+sns.countplot(y='Region', data=country_data)
+plt.show()
+
+# %% 1.2 Adding a third variable with hue
+
+tips = sns.load_dataset('tips')
+tips.head()
+
+sns.scatterplot(x='total_bill', y='tip', data=tips, hue='smoker', hue_order=['No', 'Yes'])
+plt.show()
+
+hue_colors = {'Yes': 'black',
+              'No': 'red'}
+sns.scatterplot(x='total_bill', y='tip', data=tips, hue='smoker', palette=hue_colors)
+plt.show()
+
+hue_colors = {'Yes': '#808080',
+              'No': '#00ff00'}
+sns.scatterplot(x='total_bill', y='tip', data=tips, hue='smoker', palette=hue_colors)
+plt.show()
+
+sns.countplot(x='smoker',
+              data=tips,
+              hue='sex')
+plt.show()

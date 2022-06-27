@@ -1,6 +1,12 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
+sudoku_game = np.load('data/10/sudoku_game.npy')
+sudoku_solution = np.load('data/10/sudoku_solution.npy')
+rgb_array = np.load('data/10/rgb_array.npy')
+tree_census = np.load('data/10/tree_census.npy')
+monthly_sales = np.load('data/10/monthly_sales.npy')
+
 # %% 1. Introducing arrays
 
 python_list = [3, 2, 5, 8, 4, 9, 7, 6, 1]
@@ -167,3 +173,211 @@ small_sudoku_game = sudoku_game.astype('int8')
 print(small_sudoku_game.dtype)
 
 # %% 2. Indexing and slicing arrays
+
+array = np.array([2, 4, 6, 8, 10])
+array[3]
+
+sudoku_solution[2, 4]
+sudoku_solution[0]
+sudoku_solution[:, 3]
+sudoku_solution[2:4]
+sudoku_solution[2:4, 2:4]
+sudoku_solution[3:6:2, 3:6:2]
+
+np.sort(sudoku_game, )
+np.sort(sudoku_game, axis=0)
+
+# %%
+
+# Select all rows of block ID data from the second column
+block_ids = tree_census[:, 1]
+
+# Print the first five block_ids
+print(block_ids[:5])
+
+# %%
+
+# Select all rows of block ID data from the second column
+block_ids = tree_census[:, 1]
+
+# Select the tenth block ID from block_ids
+tenth_block_id = block_ids[9]
+print(tenth_block_id)
+
+# %%
+
+# Select all rows of block ID data from the second column
+block_ids = tree_census[:, 1]
+
+# Select five block IDs from block_ids starting with the tenth ID
+block_id_slice = block_ids[9:14]
+print(block_id_slice)
+
+# %%
+
+# Extract trunk diameters information and sort from smallest to largest
+sorted_trunk_diameters = np.sort(tree_census[:, 2])
+print(sorted_trunk_diameters)
+
+# %%
+
+# Create an array of the first 100 trunk diameters from tree_census
+hundred_diameters = tree_census[:100, 2]
+print(hundred_diameters)
+
+# %%
+
+# Create an array of trunk diameters with even row indices from 50 to 100 inclusive
+every_other_diameter = tree_census[50:101:2, 2]
+print(every_other_diameter)
+
+# %% 2.1 Filtering arrays
+
+# Masks and indexing or np.where()
+
+# Masks
+one_to_five = np.arange(1, 6)
+mask = one_to_five % 2 == 0
+mask
+one_to_five[mask]
+
+classroom_ids_and_size = np.array([[1, 22], [2, 21], [3, 27], [4, 26]])
+classroom_ids_and_size
+classroom_ids_and_size[:, 1] % 2 == 0
+classroom_ids_and_size[:, 0][classroom_ids_and_size[:, 1] % 2 == 0]
+
+# np.where()
+np.where(classroom_ids_and_size[:, 1] % 2 == 0)
+
+row_ind, column_ind = np.where(sudoku_game == 0)
+row_ind
+column_ind
+
+np.where(sudoku_game == 0, '', sudoku_game)
+
+# %%
+
+# Create an array which contains row data on the largest tree in tree_census
+largest_tree_data = tree_census[tree_census[:, 2] == 51]
+print(largest_tree_data)
+
+# %%
+
+# Create an array which contains row data on the largest tree in tree_census
+largest_tree_data = tree_census[tree_census[:, 2] == 51]
+print(largest_tree_data)
+
+# Slice largest_tree_data to get only the block id
+largest_tree_block_id = largest_tree_data[:, 1]
+print(largest_tree_block_id)
+
+# %%
+
+# Create an array which contains row data on the largest tree in tree_census
+largest_tree_data = tree_census[tree_census[:, 2] == 51]
+print(largest_tree_data)
+
+# Slice largest_tree_data to get only the block ID
+largest_tree_block_id = largest_tree_data[:, 1]
+print(largest_tree_block_id)
+
+# Create an array which contains row data on all trees with largest_tree_block_id
+trees_on_largest_tree_block = tree_census[tree_census[:, 1] == largest_tree_block_id]
+print(trees_on_largest_tree_block)
+
+# %%
+
+# Create the block_313879 array containing trees on block 313879
+block_313879 = tree_census[tree_census[:, 1] == 313879]
+print(block_313879)
+
+# %%
+
+# Create an array of row_indices for trees on block 313879
+row_indices = np.where(tree_census[:, 1] == 313879)
+
+# Create an array which only contains data for trees on block 313879
+block_313879 = tree_census[row_indices]
+print(block_313879)
+
+# %%
+
+# Create and print a 1D array of tree and stump diameters
+trunk_stump_diameters = np.where(tree_census[:, 2] == 0, tree_census[:, 3], tree_census[:, 2])
+print(trunk_stump_diameters)
+
+# %% 2.2 Adding and removing data
+
+classroom_ids_and_size
+new_classrooms = np.array([[5, 30], [5, 17]])
+np.concatenate((classroom_ids_and_size, new_classrooms))
+
+grade_levels_and_teachers = np.array([[1, "James"], [1, 'George'], [3, 'Amy'], [3, 'Meehir']])
+classroom_data = np.concatenate((classroom_ids_and_size, grade_levels_and_teachers), axis=1)
+classroom_data
+
+array_1D = np.array([1, 2, 3])
+column_array_2D = array_1D.reshape((3, 1))
+column_array_2D.shape
+array_1D.shape
+
+row_array_2D = array_1D.reshape((1, 3))
+row_array_2D
+
+classroom_data
+np.delete(classroom_data, 1, axis=0)
+np.delete(classroom_data, 1, axis=1)
+np.delete(classroom_data, 1)
+
+# %%
+
+# Print the shapes of tree_census and new_trees
+print(tree_census.shape, new_trees.shape)
+
+# %%
+
+# Print the shapes of tree_census and new_trees
+print(tree_census.shape, new_trees.shape)
+
+# Add rows to tree_census which contain data for the new trees
+updated_tree_census = np.concatenate((tree_census, new_trees), axis=0)
+print(updated_tree_census)
+
+# %%
+
+# Print the shapes of tree_census and trunk_stump_diameters
+print(tree_census.shape, trunk_stump_diameters.shape)
+
+# %%
+
+# Print the shapes of tree_census and trunk_stump_diameters
+print(trunk_stump_diameters.shape, tree_census.shape)
+
+# Reshape trunk_stump_diameters
+reshaped_diameters = trunk_stump_diameters.reshape((1000, 1))
+
+# %%
+
+# Print the shapes of tree_census and trunk_stump_diameters
+print(trunk_stump_diameters.shape, tree_census.shape)
+
+# Reshape trunk_stump_diameters
+reshaped_diameters = trunk_stump_diameters.reshape((1000, 1))
+
+# Concatenate reshaped_diameters to tree_census as the last column
+concatenated_tree_census = np.concatenate((tree_census, reshaped_diameters), axis=1)
+print(concatenated_tree_census)
+
+# %%
+
+# Delete the stump diameter column from tree_census
+tree_census_no_stumps = np.delete(tree_census, 3, axis=1)
+
+# Save the indices of the trees on block 313879
+private_block_indices = np.where(tree_census[:,1] == 313879)
+
+# Delete the rows for trees on block 313879 from tree_census_no_stumps
+tree_census_clean = np.delete(tree_census_no_stumps, private_block_indices, axis=0)
+
+# Print the shape of tree_census_clean
+print(tree_census_clean.shape)

@@ -548,3 +548,62 @@ uppercase_names = vectorized_upper(names)
 print(uppercase_names)
 
 # %% 3.2 Broadcasting
+
+broad_array_1 = np.array([[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]])
+broad_array_1.shape
+broad_array_2 = np.array([[0, 1, 2, 3, 4]])
+broad_array_2.shape
+
+broad_array_1 + broad_array_2
+
+broad_array_3 = np.array([[0, 1]])
+broad_array_1 + broad_array_3                   # will not work: shapes (2,5) (1,2)
+broad_array_1 + broad_array_3.reshape((2, 1))   # will work
+
+# %%
+
+monthly_growth_rate = [1.01, 1.03, 1.03, 1.02, 1.05, 1.03, 1.06, 1.04, 1.03, 1.04, 1.02, 1.01]
+
+# Convert monthly_growth_rate into a NumPy array
+monthly_growth_1D = np.array(monthly_growth_rate)
+
+# Reshape monthly_growth_1D
+monthly_growth_2D = monthly_growth_1D.reshape((len(monthly_growth_1D), 1))
+
+# Multiply each column in monthly_sales by monthly_growth_2D
+print(monthly_sales * monthly_growth_2D)
+
+# %%
+
+monthly_industry_multipliers = np.array([[0.98, 1.02, 1.],
+                                         [1.00, 1.01, 0.97],
+                                         [1.06, 1.03, 0.98],
+                                         [1.08, 1.01, 0.98],
+                                         [1.08, 0.98, 0.98],
+                                         [1.1, 0.99, 0.99],
+                                         [1.12, 1.01, 1.],
+                                         [1.1, 1.02, 1.],
+                                         [1.11, 1.01, 1.01],
+                                         [1.08, 0.99, 0.97],
+                                         [1.09, 1., 1.02],
+                                         [1.13, 1.03, 1.02]])
+
+# Find the mean sales projection multiplier for each industry
+mean_multipliers = monthly_industry_multipliers.mean(axis=0)
+print(mean_multipliers)
+
+# Print the shapes of mean_multipliers and monthly_sales
+print(mean_multipliers.shape, monthly_sales.shape)
+
+# Multiply each value by the multiplier for that industry
+projected_sales = monthly_sales * mean_multipliers
+print(projected_sales)
+
+# %% 4. Saving and loading arrays
+
+rgb = np.array([[[255, 0, 0], [255, 0, 0], [255, 0, 0]],
+                [[0, 255, 0], [0, 255, 0], [0, 255, 0]],
+                [[0, 0, 255], [0, 0, 255], [0, 0, 255]]])
+
+plt.imshow(rgb)
+plt.show()

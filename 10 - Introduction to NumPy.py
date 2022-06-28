@@ -121,7 +121,7 @@ print(reshaped_game)
 
 bin(10436)
 
-np_int32_range = [0-(2**32)/2, 0+(2**32)/2]
+np_int32_range = [0 - (2 ** 32) / 2, 0 + (2 ** 32) / 2]
 
 np.array([1.32, 5.78, 175.55]).dtype
 
@@ -374,10 +374,177 @@ print(concatenated_tree_census)
 tree_census_no_stumps = np.delete(tree_census, 3, axis=1)
 
 # Save the indices of the trees on block 313879
-private_block_indices = np.where(tree_census[:,1] == 313879)
+private_block_indices = np.where(tree_census[:, 1] == 313879)
 
 # Delete the rows for trees on block 313879 from tree_census_no_stumps
 tree_census_clean = np.delete(tree_census_no_stumps, private_block_indices, axis=0)
 
 # Print the shape of tree_census_clean
 print(tree_census_clean.shape)
+
+# %% 3. Summarizing data
+
+# .sum()
+# .min()
+# .max()
+# .mean()
+# .cumsum()
+
+security_breaches = np.array([[0, 5, 1],
+                              [0, 2, 0],
+                              [1, 1, 2],
+                              [2, 2, 1],
+                              [0, 0, 0]])
+
+security_breaches.sum()
+np.sum(security_breaches)
+
+security_breaches.sum(axis=0)
+security_breaches.sum(axis=1)
+
+security_breaches.min()
+security_breaches.max()
+
+security_breaches.max(axis=0)
+security_breaches.max(axis=1)
+
+security_breaches.mean()
+security_breaches.mean(axis=0)
+security_breaches.mean(axis=1)
+
+security_breaches.sum(axis=0, keepdims=True)
+
+security_breaches.cumsum(axis=0)
+
+cum_sum_by_client = security_breaches.cumsum(axis=0)
+plt.plot(np.arange(1, 6), cum_sum_by_client[:, 0], label='Client 1')
+plt.plot(np.arange(1, 6), cum_sum_by_client[:, 1], label='Client 2')
+plt.plot(np.arange(1, 6), cum_sum_by_client[:, 2], label='Client 3')
+plt.plot(np.arange(1, 6), cum_sum_by_client.mean(axis=1), label='Average')
+plt.legend()
+plt.show()
+
+# %%
+
+monthly_sales = np.array([[4134, 23925, 8657],
+                          [4116, 23875, 9142],
+                          [4673, 27197, 10645],
+                          [4580, 25637, 10456],
+                          [5109, 27995, 11299],
+                          [5011, 27419, 10625],
+                          [5245, 27305, 10630],
+                          [5270, 27760, 11550],
+                          [4680, 24988, 9762],
+                          [4913, 25802, 10456],
+                          [5312, 25405, 13401],
+                          [6630, 27797, 18403]])
+# Create a 2D array of total monthly sales across industries
+monthly_industry_sales = monthly_sales.sum(axis=1, keepdims=True)
+print(monthly_industry_sales)
+
+# Add this column as the last column in monthly_sales
+monthly_sales_with_total = np.concatenate((monthly_sales, monthly_industry_sales), axis=1)
+print(monthly_sales_with_total)
+
+# %%
+
+# Create the 1D array avg_monthly_sales
+avg_monthly_sales = monthly_sales.mean(axis=1)
+print(avg_monthly_sales)
+
+# Plot avg_monthly_sales by month
+plt.plot(np.arange(1, 13), avg_monthly_sales, label="Average sales across industries")
+
+# Plot department store sales by month
+plt.plot(np.arange(1, 13), monthly_sales[:, 2], label="Department store sales")
+plt.legend()
+plt.show()
+
+# %%
+
+# Find cumulative monthly sales for each industry
+cumulative_monthly_industry_sales = monthly_sales.cumsum(axis=0)
+print(cumulative_monthly_industry_sales)
+
+# Plot each industry's cumulative sales by month as separate lines
+plt.plot(np.arange(1, 13), cumulative_monthly_industry_sales[:, 0], label="Liquor Stores")
+plt.plot(np.arange(1, 13), cumulative_monthly_industry_sales[:, 1], label="Restaurants")
+plt.plot(np.arange(1, 13), cumulative_monthly_industry_sales[:, 2], label="Department stores")
+plt.legend()
+plt.show()
+
+# %% 3.1 Vectorized operations
+
+np.arange(1000000).sum()
+
+slow_py = np.array([[1, 2, 3], [4, 5, 6]])
+
+for row in range(slow_py.shape[0]):
+    for column in range(slow_py.shape[1]):
+        slow_py[row][column] += 3
+
+fast_py = np.array([[1, 2, 3], [4, 5, 6]])
+fast_py + 3
+
+fast_py * 3
+
+slow_py + fast_py
+
+slow_py * fast_py
+
+slow_py > 2
+
+chr_array = np.array(['NumPy', 'is', 'awsome'])
+len(chr_array) > 2 # not vectorized - its Python function
+
+vectorize_len = np.vectorize(len)
+vectorize_len(chr_array) > 2 # vectorized len()
+
+# %%
+
+# Create an array of tax collected by industry and month
+tax_collected = monthly_sales * 0.05
+print(tax_collected)
+
+# Create an array of sales revenue plus tax collected by industry and month
+total_tax_and_revenue = monthly_sales + tax_collected
+print(total_tax_and_revenue)
+
+# %%
+
+monthly_industry_multipliers = np.array([[0.98, 1.02, 1],
+                                         [1.00, 1.01, 0.97],
+                                         [1.06, 1.03, 0.98],
+                                         [1.08, 1.01, 0.98],
+                                         [1.08, 0.98, 0.98],
+                                         [1.1, 0.99, 0.99],
+                                         [1.12, 1.01, 1],
+                                         [1.1, 1.02, 1],
+                                         [1.11, 1.01, 1.01],
+                                         [1.08, 0.99, 0.97],
+                                         [1.09, 1, 1.02],
+                                         [1.13, 1.03, 1.02]])
+
+# Create an array of monthly projected sales for all industries
+projected_monthly_sales = monthly_sales * monthly_industry_multipliers
+print(projected_monthly_sales)
+
+# Graph current liquor store sales and projected liquor store sales by month
+plt.plot(np.arange(1, 13), monthly_sales[:, 0], label="Current liquor store sales")
+plt.plot(np.arange(1, 13), projected_monthly_sales[:, 0], label="Projected liquor store sales")
+plt.legend()
+plt.show()
+
+# %%
+
+names = np.array([["Izzy", "Monica", "Marvin"],
+                  ["Weber", "Patel", "Hernandez"]])
+
+# Vectorize the .upper() string method
+vectorized_upper = np.vectorize(str.upper)
+
+# Apply vectorized_upper to the names array
+uppercase_names = vectorized_upper(names)
+print(uppercase_names)
+
+# %% 3.2 Broadcasting

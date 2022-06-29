@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 
 sudoku_game = np.load('data/10/sudoku_game.npy')
@@ -39,7 +40,7 @@ plt.show()
 # %%
 
 # Convert sudoku_list into an array
-sudoku_array = np.array(sudoku_list)
+sudoku_array = np.array(sudoku_game)
 # Print the type of sudoku_array
 print(type(sudoku_array))
 
@@ -601,9 +602,201 @@ print(projected_sales)
 
 # %% 4. Saving and loading arrays
 
+# .csv
+# .txt
+# .pkl
+# .npy
+
 rgb = np.array([[[255, 0, 0], [255, 0, 0], [255, 0, 0]],
                 [[0, 255, 0], [0, 255, 0], [0, 255, 0]],
                 [[0, 0, 255], [0, 0, 255], [0, 0, 255]]])
 
 plt.imshow(rgb)
 plt.show()
+
+# %%
+
+rgb = np.array([[[255, 0, 0], [255, 255, 0], [255, 255, 255]],
+                [[255, 0, 255], [0, 255, 0], [0, 255, 255]],
+                [[0, 0, 0], [0, 255, 255], [0, 0, 255]]])
+
+plt.imshow(rgb)
+plt.show()
+
+# %%
+
+# read .npy
+with open('data/10/rgb_array.npy', 'rb') as f:
+    monet_rgb_array = np.load(f)
+plt.imshow(logo_rgb_array)
+plt.show()
+
+red_array = monet_rgb_array[:, :, 0]
+blue_array = monet_rgb_array[:, :, 1]
+green_array = monet_rgb_array[:, :, 2]
+
+red_array[1], blue_array[1], green_array[1]
+
+unique, counts = np.unique(monet_rgb_array, return_counts=True)
+rgb_dict = dict(zip(unique, counts))
+max(rgb_dict, key=rgb_dict.get)
+
+dark_monet_array = np.where(monet_rgb_array == 148, 255, monet_rgb_array)
+plt.imshow(dark_monet_array)
+plt.show()
+
+# write .npy
+with open('data/10/dark_monet_array.npy', 'wb') as f:
+    np.save(f, dark_monet_array)
+
+# help
+help(np.unique)
+help(np.ndarray.flatten)
+
+# %%
+
+# Load the mystery_image.npy file
+with open('data/10/rgb_array.npy', 'rb') as f:
+    rgb_array = np.load(f)
+
+plt.imshow(rgb_array)
+plt.show()
+
+# %%
+
+# Display the documentation for .astype()
+help(np.ndarray.astype)
+
+# %%
+
+# Reduce every value in rgb_array by 50 percent
+darker_rgb_array = rgb_array * 0.5
+
+# Convert darker_rgb_array into an array of integers
+darker_rgb_int_array = darker_rgb_array.astype(np.int8)
+plt.imshow(darker_rgb_int_array)
+plt.show()
+
+# Save darker_rgb_int_array to an .npy file called darker_monet.npy
+with open('data/10/darker_monet.npy', 'wb') as f:
+    np.save(f, darker_rgb_int_array)
+
+# %% 4.1 Array acrobatics
+
+flipped_monet = np.flip(monet_rgb_array)
+plt.imshow(flipped_monet)
+plt.show()
+
+flipped_row_monet = np.flip(monet_rgb_array, axis=0)
+plt.imshow(flipped_row_monet)
+plt.show()
+
+flipped_colors_monet = np.flip(monet_rgb_array, axis=2)
+plt.imshow(flipped_colors_monet)
+plt.show()
+
+flipped_except_colors_monet = np.flip(monet_rgb_array, axis=(0, 1))
+plt.imshow(flipped_except_colors_monet)
+plt.show()
+
+# %% Transposing
+
+transposing_array = np.array([[1.1, 1.2, 1.3],
+                              [2.1, 2.2, 2.3],
+                              [3.1, 3.2, 3.3],
+                              [4.1, 4.2, 4.3]])
+
+np.flip(transposing_array)
+np.transpose(transposing_array)
+
+transposing_monet = np.transpose(monet_rgb_array, axes=(1, 0, 2))
+plt.imshow(transposing_monet)
+plt.show()
+
+# %%
+
+# Flip rgb_array so that it is the mirror image of the original
+mirrored_monet = np.flip(rgb_array, axis=1)
+plt.imshow(mirrored_monet)
+plt.show()
+
+# Flip rgb_array so that it is upside down
+upside_down_monet = np.flip(rgb_array, axis=(0, 1))
+plt.imshow(upside_down_monet)
+plt.show()
+
+# Transpose rgb_array
+transposed_rgb = np.transpose(rgb_array, axes=(1, 0, 2))
+plt.imshow(transposed_rgb)
+plt.show()
+
+# %% 4.2 Stacking and splitting
+
+rgb
+
+red_array = rgb[:, :, 0]
+blue_array = rgb[:, :, 1]
+green_array = rgb[:, :, 2]
+red_array
+
+red_array, blue_array, green_array = np.split(rgb, 3, axis=2)
+red_array.shape
+
+red_array_2D = red_array.reshape((3, 3))
+red_array_2D
+red_array_2D.shape
+
+plt.imshow(red_array)
+plt.show()
+
+#%%
+
+red_array, blue_array, green_array = np.split(rgb_array, 3, axis=2)
+
+stacked_rbg = np.stack([red_array, green_array, blue_array], axis=2)
+plt.imshow(red_array)
+plt.show()
+
+#%%
+
+# Split monthly_sales into quarterly data
+q1_sales, q2_sales, q3_sales, q4_sales = np.split(monthly_sales, 4, axis=0)
+print(q1_sales)
+
+# Stack the four quarterly sales arrays
+quarterly_sales = np.stack([q1_sales, q2_sales, q3_sales, q4_sales], axis=0)
+print(quarterly_sales)
+
+#%%
+
+# Split rgb_array into red, green, and blue arrays
+red_array, green_array, blue_array = np.split(rgb_array, 3, axis=2)
+
+#%%
+
+# Split rgb_array into red, green, and blue arrays
+red_array, green_array, blue_array = np.split(rgb_array, 3, axis=2)
+
+# Create emphasized_blue_array
+emphasized_blue_array = np.where(blue_array > blue_array.mean(), 255, blue_array)
+
+# Print the shape of emphasized_blue_array
+print(emphasized_blue_array.shape)
+
+# Remove the trailing dimension from emphasized_blue_array
+emphasized_blue_array_2D = emphasized_blue_array.reshape((675, 843))
+
+#%%
+
+# Print the shapes of blue_array and emphasized_blue_array_2D
+print(blue_array.shape, emphasized_blue_array_2D.shape)
+
+# Reshape red_array and green_array
+red_array_2D = red_array.reshape((675, 843))
+green_array_2D = green_array.reshape((675, 843))
+
+# Stack red_array_2D, green_array_2D, and emphasized_blue_array_2D
+emphasized_blue_monet = np.stack([red_array_2D, green_array_2D, emphasized_blue_array_2D], axis=2)
+plt.imshow(emphasized_blue_monet)
+plt.show()
+

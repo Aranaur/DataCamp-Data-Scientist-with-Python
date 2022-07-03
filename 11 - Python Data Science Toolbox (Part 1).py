@@ -6,7 +6,7 @@ from functools import reduce
 tweets_df = pd.read_csv('data/11/tweets.csv')
 df = pd.read_csv('data/11/tweets.csv')
 
-tweets.head()
+tweets_df.head()
 
 # %% 1. Writing your own functions
 
@@ -293,9 +293,10 @@ import builtins
 
 dir(builtins)
 
+
 # array not in builtins
 
-#%% 2.1 Nested functions
+# %% 2.1 Nested functions
 
 # def outer(...):
 #     """..."""
@@ -316,10 +317,146 @@ def mod2plus5(x1, x2, x3):
 
 def mod2plus5(x1, x2, x3):
     """Returns the remainder plus 5 of three values"""
+
     def inner(x):
         """Returns the remainder plus 5 of three values"""
         return x % 2 + 5
+
     return inner(x1), inner(x2), inner(x3)
 
 
 mod2plus5(1, 2, 3)
+
+
+def raise_val(n):
+    """Return the inner function."""
+
+    def inner(x):
+        """Raise x to the power of n."""
+        raised = x ** n
+        return raised
+
+    return inner
+
+
+square = raise_val(2)
+cube = raise_val(3)
+print(square(2), cube(4))
+
+
+def outer():
+    """Prints the value n."""
+    n = 1
+    def inner():
+        nonlocal n
+        n = 2
+        print(n)
+    inner()
+    print(n)
+
+outer()
+
+#%%
+
+
+# Define three_shouts
+def three_shouts(word1, word2, word3):
+    """Returns a tuple of strings
+    concatenated with '!!!'."""
+
+    # Define inner
+    def inner(word):
+        """Returns a string concatenated with '!!!'."""
+        return word + '!!!'
+    # Return a tuple of strings
+    return (inner(word1), inner(word2), inner(word3))
+
+
+# Call three_shouts() and print
+print(three_shouts('a', 'b', 'c'))
+
+#%%
+
+
+# Define echo
+def echo(n):
+    """Return the inner_echo function."""
+
+    # Define inner_echo
+    def inner_echo(word1):
+        """Concatenate n copies of word1."""
+        echo_word = word1 * n
+        return echo_word
+    # Return inner_echo
+    return(inner_echo)
+
+
+# Call echo: twice
+twice = echo(2)
+
+# Call echo: thrice
+thrice = echo(3)
+
+# Call twice() and thrice() then print
+print(twice('hello'), thrice('hello'))
+
+#%%
+
+
+# Define echo_shout()
+def echo_shout(word):
+    """Change the value of a nonlocal variable"""
+    # Concatenate word with itself: echo_word
+    echo_word = word*2
+    # Print echo_word
+    print(echo_word)
+    # Define inner function shout()
+    def shout():
+        """Alter a variable in the enclosing scope"""
+        # Use echo_word in nonlocal scope
+        nonlocal echo_word
+        # Change echo_word to echo_word concatenated with '!!!'
+        echo_word = echo_word + '!!!'
+    # Call function shout()
+    shout()
+
+    # Print echo_word
+    print(echo_word)
+
+# Call function echo_shout() with argument 'hello'
+echo_shout('hello')
+
+#%% 2.2 Default and flexible arguments
+
+
+def power(number, pow=1):
+    """Raise number to the power of pow"""
+    new_value = number ** pow
+    return new_value
+
+
+power(9, 2)
+power(9)
+
+
+def add_all(*args):  # for bunch of parameters
+    """Sum all values in *args together"""
+    # Initialize sum
+    sum_all = 0
+    # accumulate the sum
+    for num in args:
+        sum_all += num
+    return sum_all
+
+
+add_all(5, 15, 3.14)
+
+
+def print_all(**kwargs):
+    """Print out key-value pairs in **kwargs"""
+    # Print out the key-value pairs
+    for key, value in kwargs.items():
+        print(key + ": " + value)
+
+
+print_all(name='Johnny', job='Actor')

@@ -1,6 +1,5 @@
 # Importing course packages; you can add more too!
 import pandas as pd
-from functools import reduce
 
 # Importing course datasets as DataFrames
 tweets_df = pd.read_csv('data/11/tweets.csv')
@@ -347,16 +346,20 @@ print(square(2), cube(4))
 def outer():
     """Prints the value n."""
     n = 1
+
     def inner():
         nonlocal n
         n = 2
         print(n)
+
     inner()
     print(n)
 
+
 outer()
 
-#%%
+
+# %%
 
 
 # Define three_shouts
@@ -368,6 +371,7 @@ def three_shouts(word1, word2, word3):
     def inner(word):
         """Returns a string concatenated with '!!!'."""
         return word + '!!!'
+
     # Return a tuple of strings
     return (inner(word1), inner(word2), inner(word3))
 
@@ -375,7 +379,8 @@ def three_shouts(word1, word2, word3):
 # Call three_shouts() and print
 print(three_shouts('a', 'b', 'c'))
 
-#%%
+
+# %%
 
 
 # Define echo
@@ -387,8 +392,9 @@ def echo(n):
         """Concatenate n copies of word1."""
         echo_word = word1 * n
         return echo_word
+
     # Return inner_echo
-    return(inner_echo)
+    return (inner_echo)
 
 
 # Call echo: twice
@@ -400,16 +406,18 @@ thrice = echo(3)
 # Call twice() and thrice() then print
 print(twice('hello'), thrice('hello'))
 
-#%%
+
+# %%
 
 
 # Define echo_shout()
 def echo_shout(word):
     """Change the value of a nonlocal variable"""
     # Concatenate word with itself: echo_word
-    echo_word = word*2
+    echo_word = word * 2
     # Print echo_word
     print(echo_word)
+
     # Define inner function shout()
     def shout():
         """Alter a variable in the enclosing scope"""
@@ -417,16 +425,19 @@ def echo_shout(word):
         nonlocal echo_word
         # Change echo_word to echo_word concatenated with '!!!'
         echo_word = echo_word + '!!!'
+
     # Call function shout()
     shout()
 
     # Print echo_word
     print(echo_word)
 
+
 # Call function echo_shout() with argument 'hello'
 echo_shout('hello')
 
-#%% 2.2 Default and flexible arguments
+
+# %% 2.2 Default and flexible arguments
 
 
 def power(number, pow=1):
@@ -461,7 +472,8 @@ def print_all(**kwargs):
 
 print_all(name='Johnny', job='Actor')
 
-#%%
+
+# %%
 
 
 # Define shout_echo
@@ -478,9 +490,9 @@ def shout_echo(word1, echo=1):
     # Return shout_word
     return shout_word
 
+
 # Call shout_echo() with "Hey": no_echo
 no_echo = shout_echo("Hey")
-
 
 # Call shout_echo() with "Hey" and echo=5: with_echo
 with_echo = shout_echo("Hey", echo=5)
@@ -489,7 +501,8 @@ with_echo = shout_echo("Hey", echo=5)
 print(no_echo)
 print(with_echo)
 
-#%%
+
+# %%
 
 
 # Define shout_echo
@@ -511,6 +524,7 @@ def shout_echo(word1, echo=1, intense=False):
     # Return echo_word_new
     return echo_word_new
 
+
 # Call shout_echo() with "Hey", echo=5 and intense=True: with_big_echo
 with_big_echo = shout_echo("Hey", echo=5, intense=True)
 
@@ -521,7 +535,8 @@ big_no_echo = shout_echo("Hey", intense=True)
 print(with_big_echo)
 print(big_no_echo)
 
-#%%
+
+# %%
 
 
 # Define gibberish
@@ -549,7 +564,8 @@ many_words = gibberish("luke", "leia", "han", "obi", "darth")
 print(one_word)
 print(many_words)
 
-#%%
+
+# %%
 
 
 # Define report_status
@@ -572,7 +588,8 @@ report_status(name="luke", affiliation="jedi", status="missing")
 # Second call to report_status()
 report_status(name="anakin", affiliation="sith lord", status="deceased")
 
-#%% 2.3 Bringing it all together
+
+# %% 2.3 Bringing it all together
 
 
 # Define count_entries()
@@ -611,7 +628,8 @@ result2 = count_entries(tweets_df, col_name='source')
 print(result1)
 print(result2)
 
-#%%
+
+# %%
 
 
 # Define count_entries()
@@ -653,4 +671,248 @@ result2 = count_entries(tweets_df, 'lang', 'source')
 print(result1)
 print(result2)
 
-#%% 3. Lambda functions
+# %% 3. Lambda functions
+
+raise_to_power = lambda x, y: x ** y
+
+raise_to_power(2, 3)
+
+nums = [48, 6, 9, 21, 1]
+
+square_all = map(lambda num: num ** 2, nums)
+print(square_all)
+list(square_all)
+
+# %%
+
+# Define echo_word as a lambda function: echo_word
+echo_word = lambda word1, echo: word1 * echo
+
+# Call echo_word: result
+result = echo_word('hey', 5)
+
+# Print result
+print(result)
+
+# %%
+
+# Create a list of strings: spells
+spells = ["protego", "accio", "expecto patronum", "legilimens"]
+
+# Use map() to apply a lambda function over spells: shout_spells
+shout_spells = map(lambda item: item + '!!!', spells)
+
+# Convert shout_spells to a list: shout_spells_list
+shout_spells_list = list(shout_spells)
+
+# Print the result
+print(shout_spells_list)
+
+# %%
+
+# Create a list of strings: fellowship
+fellowship = ['frodo', 'samwise', 'merry', 'pippin', 'aragorn', 'boromir', 'legolas', 'gimli', 'gandalf']
+
+# Use filter() to apply a lambda function over fellowship: result
+result = filter(lambda member: len(member) > 6, fellowship)
+
+# Convert result to a list: result_list
+result_list = list(result)
+
+# Print result_list
+print(result_list)
+
+# %%
+
+# Import reduce from functools
+from functools import reduce
+
+# Create a list of strings: stark
+stark = ['robb', 'sansa', 'arya', 'brandon', 'rickon']
+
+# Use reduce() to apply a lambda function over stark: result
+result = reduce(lambda item1, item2: item1 + item2, stark)
+
+# Print the result
+print(result)
+
+
+# %% 3.1 Introduction to error handling
+
+def sqrt(x):
+    """Return the square root of a number"""
+    if x < 0:
+        raise ValueError('x must be non-negative')
+    try:
+        return x ** 0.5
+    except TypeError:
+        print('x must be an int float')
+
+
+sqrt(-2)
+
+
+# %%
+
+
+# Define shout_echo
+def shout_echo(word1, echo=1):
+    """Concatenate echo copies of word1 and three
+    exclamation marks at the end of the string."""
+
+    # Initialize empty strings: echo_word, shout_words
+    echo_word = ""
+    shout_words = ""
+
+    # Add exception handling with try-except
+    try:
+        # Concatenate echo copies of word1 using *: echo_word
+        echo_word = echo * word1
+
+        # Concatenate '!!!' to echo_word: shout_words
+        shout_words = echo_word + '!!!'
+    except TypeError:
+        # Print error message
+        print("word1 must be a string and echo must be an integer.")
+
+    # Return shout_words
+    return shout_words
+
+
+# Call shout_echo
+shout_echo("particle", echo="accelerator")
+
+# %%
+
+
+# Define shout_echo
+def shout_echo(word1, echo=1):
+    """Concatenate echo copies of word1 and three
+    exclamation marks at the end of the string."""
+
+    # Raise an error with raise
+    if echo < 0:
+        raise ValueError('echo must be greater than or equal to 0')
+
+    # Concatenate echo copies of word1 using *: echo_word
+    echo_word = word1 * echo
+
+    # Concatenate '!!!' to echo_word: shout_word
+    shout_word = echo_word + '!!!'
+
+    # Return shout_word
+    return shout_word
+
+
+# Call shout_echo
+shout_echo("particle", echo=5)
+
+#%% 3.2 Bringing it all together
+
+
+def sqrt(x):
+    try:
+        return x ** 0.5
+    except:
+        print('x must an int or float')
+
+
+def sqrt(x):
+    if x < 0:
+        raise ValueError('x must be non-negative')
+    try:
+        return x ** 0.5
+    except TypeError:
+        print('x must an int or float')
+
+
+#%%
+
+# Select retweets from the Twitter DataFrame: result
+result = filter(lambda x: x[0:2] == 'RT', tweets_df['text'])
+
+# Create list from filter object result: res_list
+res_list = list(result)
+
+# Print all retweets in res_list
+for tweet in res_list:
+    print(tweet)
+
+
+#%%
+
+
+# Define count_entries()
+def count_entries(df, col_name='lang'):
+    """Return a dictionary with counts of
+    occurrences as value for each key."""
+
+    # Initialize an empty dictionary: cols_count
+    cols_count = {}
+
+    # Add try block
+    try:
+        # Extract column from DataFrame: col
+        col = df[col_name]
+
+        # Iterate over the column in DataFrame
+        for entry in col:
+
+            # If entry is in cols_count, add 1
+            if entry in cols_count.keys():
+                cols_count[entry] += 1
+            # Else add the entry to cols_count, set the value to 1
+            else:
+                cols_count[entry] = 1
+
+        # Return the cols_count dictionary
+        return cols_count
+
+    # Add except block
+    except:
+        'The DataFrame does not have a ' + col_name + ' column.'
+
+
+# Call count_entries(): result1
+result1 = count_entries(tweets_df, 'lang')
+
+# Print result1
+print(result1)
+
+#%%
+
+
+# Define count_entries()
+def count_entries(df, col_name='lang'):
+    """Return a dictionary with counts of
+    occurrences as value for each key."""
+
+    # Raise a ValueError if col_name is NOT in DataFrame
+    if col_name not in df.columns:
+        raise ValueError('The DataFrame does not have a ' + col_name + ' column.')
+
+    # Initialize an empty dictionary: cols_count
+    cols_count = {}
+
+    # Extract column from DataFrame: col
+    col = df[col_name]
+
+    # Iterate over the column in DataFrame
+    for entry in col:
+
+        # If entry is in cols_count, add 1
+        if entry in cols_count.keys():
+            cols_count[entry] += 1
+            # Else add the entry to cols_count, set the value to 1
+        else:
+            cols_count[entry] = 1
+
+        # Return the cols_count dictionary
+    return cols_count
+
+
+# Call count_entries(): result1
+result1 = count_entries(tweets_df, 'lang')
+
+# Print result1
+print(result1)

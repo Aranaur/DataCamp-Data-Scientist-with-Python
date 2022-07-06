@@ -198,3 +198,68 @@ print(result1 == mutants)
 print(result2 == powers)
 
 #%% 1.3 Using iterators to load large files into memory
+
+import pandas as pd
+result = []
+for chunk in pd.read_csv('data/12/world_ind_pop_data.csv', chunksize=1000):
+    result.append(sum(chunk['Urban population (% of total)']))
+
+total = sum(result)
+total
+
+total = 0
+for chunk in pd.read_csv('data/12/world_ind_pop_data.csv', chunksize=1000):
+    total += sum(chunk['Urban population (% of total)'])
+total
+
+#%%
+
+# Initialize an empty dictionary: counts_dict
+counts_dict = {}
+
+# Iterate over the file chunk by chunk
+for chunk in pd.read_csv('data/12/tweets.csv', chunksize=10):
+
+    # Iterate over the column in DataFrame
+    for entry in chunk['lang']:
+        if entry in counts_dict.keys():
+            counts_dict[entry] += 1
+        else:
+            counts_dict[entry] = 1
+
+# Print the populated dictionary
+print(counts_dict)
+
+#%%
+
+
+# Define count_entries()
+def count_entries(csv_file, c_size, colname):
+    """Return a dictionary with counts of
+    occurrences as value for each key."""
+
+    # Initialize an empty dictionary: counts_dict
+    counts_dict = {}
+
+    # Iterate over the file chunk by chunk
+    for chunk in pd.read_csv(csv_file, chunksize=c_size):
+
+        # Iterate over the column in DataFrame
+        for entry in chunk[colname]:
+            if entry in counts_dict.keys():
+                counts_dict[entry] += 1
+            else:
+                counts_dict[entry] = 1
+
+    # Return counts_dict
+    return counts_dict
+
+# Call count_entries(): result_counts
+result_counts = count_entries(csv_file='data/12/tweets.csv', c_size=10, colname='lang')
+
+# Print result_counts
+print(result_counts)
+
+#%% 2. List comprehensions
+
+#%%

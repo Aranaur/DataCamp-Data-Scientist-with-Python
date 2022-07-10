@@ -331,3 +331,38 @@ plt.show()
 #%% 3. Additional Plot Types
 
 #%% 3.1 Categorical Plot Types
+
+sns.stripplot(data=grants,
+              y='Region',
+              x='Award_Amount',
+              jitter=True)
+
+sns.swarmplot(data=grants,
+              y='Region',
+              x='Award_Amount')
+
+sns.boxplot(data=grants,
+            y='Region',
+            x='Award_Amount')
+
+sns.violinplot(data=grants,
+            y='Region',
+            x='Award_Amount')
+
+sns.boxenplot(data=grants,
+               y='Region',
+               x='Award_Amount')
+
+sns.barplot(data=grants,
+            y='Region',
+            x='Award_Amount',
+            hue='Model Selected')
+
+sns.pointplot(data=grants,
+            y='Region',
+            x='Award_Amount',
+            hue='Model Selected')
+
+sns.countplot(data=grants,
+              y='Region',
+              hue='Model Selected')

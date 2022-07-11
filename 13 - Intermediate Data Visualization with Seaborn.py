@@ -387,3 +387,191 @@ sns.swarmplot(data=df,
 plt.show()
 
 #%%
+
+# Create a boxplot
+sns.boxplot(data=df,
+            x='Award_Amount',
+            y='Model Selected')
+
+plt.show()
+plt.clf()
+
+#%%
+
+# Create a violinplot with the husl palette
+sns.violinplot(data=df,
+               x='Award_Amount',
+               y='Model Selected',
+               palette='husl')
+
+plt.show()
+plt.clf()
+
+#%%
+
+# Create a boxenplot with the Paired palette and the Region column as the hue
+sns.boxenplot(data=df,
+              x='Award_Amount',
+              y='Model Selected',
+              palette='Paired',
+              hue='Region')
+
+plt.show()
+plt.clf()
+
+#%%
+
+# Show a countplot with the number of models used with each region a different color
+sns.countplot(data=df,
+              y="Model Selected",
+              hue="Region")
+
+plt.show()
+plt.clf()
+
+#%%
+
+# Create a pointplot and include the capsize in order to show caps on the error bars
+sns.pointplot(data=df,
+              y='Award_Amount',
+              x='Model Selected',
+              capsize=.1)
+
+plt.show()
+plt.clf()
+
+#%%
+
+# Create a barplot with each Region shown as a different color
+sns.barplot(data=df,
+            y='Award_Amount',
+            x='Model Selected',
+            hue='Region')
+
+plt.show()
+plt.clf()
+
+#%% 3.2 Regression Plots
+
+sns.regplot(data=bike_share,
+            x='temp',
+            y='total_rentals',
+            marker='+')
+
+sns.residplot(data=bike_share,
+              x='temp',
+              y='total_rentals')
+
+sns.regplot(data=bike_share,
+              x='temp',
+              y='total_rentals',
+              order=2)
+
+sns.residplot(data=bike_share,
+              x='temp',
+              y='total_rentals',
+              order=2)
+
+sns.regplot(data=bike_share,
+              x='mnth',
+              y='total_rentals',
+              x_jitter=0.1,
+              order=2)
+
+sns.regplot(data=bike_share,
+            x='mnth',
+            y='total_rentals',
+            x_estimator=np.mean,
+            order=2)
+
+sns.regplot(data=bike_share,
+            x='temp',
+            y='total_rentals',
+            x_bins=4)
+
+
+#%%
+# Display a regression plot for Tuition
+sns.regplot(data=df,
+            y='Tuition',
+            x='SAT_AVG_ALL',
+            marker='^',
+            color='g')
+
+plt.show()
+plt.clf()
+
+#%%
+
+# Display the residual plot
+sns.residplot(data=df,
+              y='Tuition',
+              x='SAT_AVG_ALL',
+              color='g')
+
+plt.show()
+plt.clf()
+
+#%%
+# Plot a regression plot of Tuition and the Percentage of Pell Grants
+sns.regplot(data=df,
+            y='Tuition',
+            x='PCTPELL')
+
+plt.show()
+plt.clf()
+
+#%%
+# Create another plot that estimates the tuition by PCTPELL
+sns.regplot(data=df,
+            y='Tuition',
+            x='PCTPELL',
+            x_bins=5)
+
+plt.show()
+plt.clf()
+
+#%%
+# The final plot should include a line using a 2nd order polynomial
+sns.regplot(data=df,
+            y='Tuition',
+            x='PCTPELL',
+            x_bins=5,
+            order=2)
+
+plt.show()
+plt.clf()
+
+#%%
+
+# Create a scatter plot by disabling the regression line
+sns.regplot(data=df,
+            y='Tuition',
+            x='UG',
+            fit_reg=False)
+
+plt.show()
+plt.clf()
+
+#%%
+
+# Create a scatter plot and bin the data into 5 bins
+sns.regplot(data=df,
+            y='Tuition',
+            x='UG',
+            x_bins=5)
+
+plt.show()
+plt.clf()
+
+#%%
+# Create a regplot and bin the data into 8 bins
+sns.regplot(data=df,
+            y='Tuition',
+            x='UG',
+            x_bins=8)
+
+plt.show()
+plt.clf()
+
+#%% 3.3 Matrix plots

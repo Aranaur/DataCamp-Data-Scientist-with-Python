@@ -74,6 +74,37 @@ nobel[nobel['sex'] == 'Female'].nsmallest(1, 'year')
 #%% 7. Repeat laureates
 
 # Selecting the laureates that have received 2 or more prizes.
-nobel.groupby('full_name').filter(lambda x: x.value_counts('year') > 1)
+nobel.groupby('full_name').filter(lambda x: len(x) >= 2)
 
-nobel.groupby('full_name').value_counts('year')
+#%% 8. How old are you when you get the prize?
+
+# Converting birth_date from String to datetime
+nobel['birth_date'] = pd.to_datetime(nobel['birth_date'], errors='coerce')
+
+# Calculating the age of Nobel Prize winners
+nobel['age'] = nobel['year'] - nobel['birth_date'].dt.year
+
+# Plotting the age of Nobel Prize winners
+sns.lmplot(data=nobel,
+           x='year',
+           y='age',
+           lowess=True,
+           aspect=2,
+           line_kws={'color': 'black'})
+
+#%% 9. Age differences between prize categories
+
+# Same plot as above, but separate plots for each type of Nobel Prize
+sns.lmplot(data=nobel, x='year', y='age', row='category')
+
+
+#%% 10. Oldest and youngest winners
+
+# The oldest winner of a Nobel Prize as of 2016
+nobel.nlargest(1, 'age')
+
+# The youngest winner of a Nobel Prize as of 2016
+nobel.nsmallest(1, 'age')
+
+#%% 11. You get a prize!
+youngest_winner = 'Malala'

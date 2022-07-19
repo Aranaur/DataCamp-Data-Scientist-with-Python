@@ -405,4 +405,185 @@ plt.show()
 
 # %% 3. Working with relational databases in Python
 
-#%% 3.1 Introduction to relational databases
+#%% 3.1 Creating a database engine in Python
+
+from sqlalchemy import create_engine
+from sqlalchemy import inspect
+engine = create_engine('sqlite:///Northwind.sqlite')
+inspector = inspect(engine)
+
+table_names = inspector.get_table_names()
+print(table_names)
+
+#%%
+# Import necessary module
+from sqlalchemy import create_engine
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Save the table names to a list: table_names
+table_names = engine.table_names()
+
+# Print the table names to the shell
+print(table_names)
+
+#%% 3.2 Querying relational databases in Python
+
+from sqlalchemy import create_engine
+import pandas as pd
+engine = create_engine('sqlite:///Northwind.sqlite')
+con = engine.connect()
+rs = con.execute('SELECT * FROM Orders')
+df = pd.DataFrame(rs.fetchall())
+df.columns = rs.keys()
+con.close()
+
+print(df.head())
+
+#%%
+from sqlalchemy import create_engine
+import pandas as pd
+engine = create_engine('sqlite:///Northwind.sqlite')
+
+with engine.connect() as con:
+    rs = con.execute('SELECT OrderID, OrderDate, ShipName FROM Orders')
+    df = pd.DataFrame(rs.fetchmany(size=5))
+    df.columns = rs.keys()
+
+#%%
+# Import packages
+from sqlalchemy import create_engine
+import pandas as pd
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Open engine connection: con
+con = engine.connect()
+
+# Perform query: rs
+rs = con.execute('SELECT * FROM Album')
+
+# Save results of the query to DataFrame: df
+df = pd.DataFrame(rs.fetchall())
+
+# Close connection
+con.close()
+
+# Print head of DataFrame df
+print(df.head())
+
+#%%
+# Open engine in context manager
+# Perform query and save results to DataFrame: df
+with engine.connect() as con:
+    rs = con.execute('SELECT LastName, Title FROM Employee')
+    df = pd.DataFrame(rs.fetchmany(size=3))
+    df.columns = rs.keys()
+
+# Print the length of the DataFrame df
+print(len(df))
+
+# Print the head of the DataFrame df
+print(df.head())
+
+#%%
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Open engine in context manager
+# Perform query and save results to DataFrame: df
+with engine.connect() as con:
+    rs = con.execute('SELECT * FROM Employee WHERE EmployeeId >= 6')
+    df = pd.DataFrame(rs.fetchall())
+    df.columns = rs.keys()
+
+# Print the head of the DataFrame df
+print(df.head())
+
+#%%
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Open engine in context manager
+with engine.connect() as con:
+    rs = con.execute('SELECT * FROM Employee ORDER BY BirthDate')
+    df = pd.DataFrame(rs.fetchall())
+
+    # Set the DataFrame's column names
+    df.columns = rs.keys()
+
+
+# Print head of DataFrame
+print(df.head())
+
+#%% 3.3 Querying relational databases directly with pandas
+
+df = pd.read_sql_query('SELECT * FROM Orders', engine)
+
+#%%
+# Import packages
+from sqlalchemy import create_engine
+import pandas as pd
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Execute query and store records in DataFrame: df
+df = pd.read_sql_query('SELECT * FROM Album', engine)
+
+# Print head of DataFrame
+print(df.head())
+
+# Open engine in context manager and store query result in df1
+with engine.connect() as con:
+    rs = con.execute("SELECT * FROM Album")
+    df1 = pd.DataFrame(rs.fetchall())
+    df1.columns = rs.keys()
+
+# Confirm that both methods yield the same result
+print(df.equals(df1))
+
+#%%
+# Import packages
+from sqlalchemy import create_engine
+import pandas as pd
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Execute query and store records in DataFrame: df
+df = pd.read_sql_query('SELECT * FROM Employee WHERE EmployeeId >= 6 ORDER BY BirthDate', engine)
+
+# Print head of DataFrame
+print(df.head())
+
+#%% 3.4 Advanced querying: exploiting table relationships
+
+from sqlalchemy import create_engine
+import pandas as pd
+engine = create_engine('sqlite:///Northwind.sqlite')
+df = pd.read_sql_query('SELECT OrderID, CompanyName FROM Orders INNER JOIN Customers on Orders.CustomersID = Customers.CustomersID',
+                       engine)
+print(df.head())
+
+#%%
+# Open engine in context manager
+# Perform query and save results to DataFrame: df
+with engine.connect() as con:
+    rs = con.execute("SELECT Title, Name FROM Album INNER JOIN Artist on Album.ArtistID = Artist.ArtistID")
+    df = pd.DataFrame(rs.fetchall())
+    df.columns = rs.keys()
+
+# Print head of DataFrame df
+print(df.head())
+
+#%%
+# Execute query and store records in DataFrame: df
+df = pd.read_sql_query('SELECT * FROM PlaylistTrack INNER JOIN Track on PlaylistTrack.TrackId = Track.TrackId WHERE Milliseconds < 250000',
+                       engine)
+
+# Print head of DataFrame
+print(df.head())

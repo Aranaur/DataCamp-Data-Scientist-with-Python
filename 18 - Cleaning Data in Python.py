@@ -161,3 +161,138 @@ assert duplicated_rides.shape[0] == 0
 #%% 2. Text and categorical data problems
 
 #%% 2.1 Membership constraints
+
+inconsistent_categories = set(study_data['blood_type']).difference(categiroes['blood_type'])
+print(inconsistent_categories)
+
+inconsistent_rows = study_data['blood_type'].isin(inconsistent_categories)
+study_data[inconsistent_rows]
+consistent_data = study_data[~inconsistent_rows]
+
+#%%
+# Print categories DataFrame
+print(categories)
+
+# Print unique values of survey columns in airlines
+print('Cleanliness: ', airlines['cleanliness'].unique(), "\n")
+print('Safety: ', airlines['safety'].unique(), "\n")
+print('Satisfaction: ', airlines['satisfaction'].unique(), "\n")
+
+#%%
+# Find the cleanliness category in airlines not in categories
+cat_clean = set(airlines['cleanliness']).difference(categories['cleanliness'])
+
+# Find rows with that category
+cat_clean_rows = airlines['cleanliness'].isin(cat_clean)
+
+# Print rows with inconsistent category
+print(airlines[cat_clean_rows])
+
+# Print rows with consistent categories only
+print(airlines[~cat_clean_rows])
+
+#%% 2.2 Categorical variables
+
+airlines['day'].value_counts()
+airlines.groupby('day').count()
+
+airlines['day'].str.upper()
+airlines['day'].str.lower()
+airlines['day'].str.strip()
+
+group_names = ['0-200K', '200-500K', '500K+']
+demographics['income_group'] = pd.qcut(demographics['household_income'], q=3, labels=group_names)
+demographics[['income_group', 'household_income']]
+
+ranges = [0, 200000, 500000, np.inf]
+group_names = ['0-200K', '200-500K', '500K+']
+demographics['income_group'] = pd.cut(demographics['household_income'], bins=ranges, labels=group_names)
+demographics[['income_group', 'household_income']]
+
+mapping = {'Microsoft': 'DesktopOS',
+           'MacOS': 'DesktopOS',
+           'Linux': 'DesktopOS',
+           'IOS': 'MobileOS',
+           'Android': 'MobileOS'}
+devices['operating_system'] = devices['operating_system'].replace(mapping)
+devices['operating_system'].unique()
+
+#%%
+# Print unique values of both columns
+print(airlines['dest_region'].unique())
+print(airlines['dest_size'].unique())
+
+# Lower dest_region column and then replace "eur" with "europe"
+airlines['dest_region'] = airlines['dest_region'].str.lower()
+airlines['dest_region'] = airlines['dest_region'].replace({'eur':'europe'})
+
+# Remove white spaces from `dest_size`
+airlines['dest_size'] = airlines['dest_size'].str.strip()
+
+# Verify changes have been effected
+print(airlines['dest_region'].unique())
+print(airlines['dest_size'].unique())
+
+#%%
+
+# Create ranges for categories
+label_ranges = [0, 60, 180, np.inf]
+label_names = ['short', 'medium', 'long']
+
+# Create wait_type column
+airlines['wait_type'] = pd.cut(airlines['wait_min'], bins = label_ranges,
+                               labels = label_names)
+
+# Create mappings and replace
+mappings = {'Monday':'weekday', 'Tuesday':'weekday', 'Wednesday': 'weekday',
+            'Thursday': 'weekday', 'Friday': 'weekday',
+            'Saturday': 'weekend', 'Sunday': 'weekend'}
+
+airlines['day_week'] = airlines['day'].replace(mappings)
+
+#%% 2.3 Cleaning text data
+
+phones['Phone number'] = phones['Phone number'].str.replace('+', '00')
+phones['Phone number'] = phones['Phone number'].str.replace('-', '')
+digits = phones['Phone number'].str.len()
+phones.loc[digits < 10, 'Phone number'] = np.nan
+
+assert digits.min() >= 10
+assert phones['Phone number'].str.contains('+|-').any() == False
+
+phones['Phone number'] = phones['Phone number'].str.replace(r'\D+', '')  # leave only numbers
+
+ride_sharing['duration'].str.replace(r'\D+', '')
+
+#%%
+# Replace "Dr." with empty string ""
+airlines['full_name'] = airlines['full_name'].str.replace("Dr.","")
+
+# Replace "Mr." with empty string ""
+airlines['full_name'] = airlines['full_name'].str.replace('Mr.', '')
+
+# Replace "Miss" with empty string ""
+airlines['full_name'] = airlines['full_name'].str.replace('Miss', '')
+
+# Replace "Ms." with empty string ""
+airlines['full_name'] = airlines['full_name'].str.replace('Ms.', '')
+
+# Assert that full_name has no honorifics
+assert airlines['full_name'].str.contains('Ms.|Mr.|Miss|Dr.').any() == False
+
+#%%
+# Store length of each row in survey_response column
+resp_length = airlines['survey_response'].str.len()
+
+# Find rows in airlines where resp_length > 40
+airlines_survey = airlines[resp_length > 40]
+
+# Assert minimum survey_response length is > 40
+assert airlines_survey['survey_response'].str.len().min() > 40
+
+# Print new survey_response column
+print(airlines_survey['survey_response'])
+
+#%% 3. Advanced data problems
+
+#%% 3.1 Uniformity

@@ -266,7 +266,7 @@ ride_sharing['duration'].str.replace(r'\D+', '')
 
 #%%
 # Replace "Dr." with empty string ""
-airlines['full_name'] = airlines['full_name'].str.replace("Dr.","")
+airlines['full_name'] = airlines['full_name'].str.replace("Dr.", "")
 
 # Replace "Mr." with empty string ""
 airlines['full_name'] = airlines['full_name'].str.replace('Mr.', '')

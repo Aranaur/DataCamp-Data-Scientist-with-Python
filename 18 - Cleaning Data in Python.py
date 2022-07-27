@@ -440,3 +440,76 @@ print(banking_imputed.isna().sum())
 #%% 4. Record linkage
 
 #%% 4.1 Comparing strings
+
+# intention
+# execution
+
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+
+fuzz.WRatio('Reeding', 'Reading')
+fuzz.WRatio('Houston Rockets', 'Rockets')
+fuzz.WRatio('Houston Rockets vs Los Angeles Lakers', 'Lakers vs Rockets')
+
+string = 'Houston Rockets vs Los Angeles Lakers'
+choices = pd.Series(['Rockets vs Lakers', 'Lakers vs Rockets',
+                     'Huston vs Lakers', 'Heat vs Bulls'])
+process.extract(string, choices, limit=2)
+
+print(restaurants_new['city'].unique())
+categories = {'city': ['New York', 'Los Angeles']}
+categories = pd.DataFrame(categories)
+for city in categories['city']:
+    matches = process.extract(city, restaurants_new['city'], limit=restaurants_new.shape[0])
+    for potential_match in matches:
+        if potential_match[1] >= 80:
+            restaurants_new.loc[restaurants_new['city'] == potential_match[0], 'city'] = city
+
+#%%
+# Import process from fuzzywuzzy
+from fuzzywuzzy import process
+
+# Store the unique values of cuisine_type in unique_types
+unique_types = restaurants['cuisine_type'].unique()
+
+# Calculate similarity of 'asian' to all values of unique_types
+print(process.extract('asian', unique_types, limit = len(unique_types)))
+
+# Calculate similarity of 'american' to all values of unique_types
+print(process.extract('american', unique_types, limit = len(unique_types)))
+
+# Calculate similarity of 'italian' to all values of unique_types
+print(process.extract('italian', unique_types, limit = len(unique_types)))
+
+#%%
+# Inspect the unique values of the cuisine_type column
+print(restaurants['cuisine_type'].unique())
+
+#%%
+# Create a list of matches, comparing 'italian' with the cuisine_type column
+matches = process.extract('italian', restaurants['cuisine_type'], limit=len(restaurants.cuisine_type))
+
+# Iterate through the list of matches to italian
+for match in matches:
+    # Check whether the similarity score is greater than or equal to 80
+    if match[1] >= 80:
+        # Select all rows where the cuisine_type is spelled this way, and set them to the correct cuisine
+        restaurants.loc[restaurants['cuisine_type'] == match[0]] = 'italian'
+
+#%%
+# Iterate through categories
+for cuisine in categories:
+    # Create a list of matches, comparing cuisine with the cuisine_type column
+    matches = process.extract(cuisine, restaurants['cuisine_type'], limit=len(restaurants.cuisine_type))
+
+    # Iterate through the list of matches
+    for match in matches:
+        # Check whether the similarity score is greater than or equal to 80
+        if match[1] >= 80:
+            # If it is, select all rows where the cuisine_type is spelled this way, and set them to the correct cuisine
+            restaurants.loc[restaurants['cuisine_type'] == match[0]] = cuisine
+
+# Inspect the final result
+print(restaurants['cuisine_type'].unique())
+
+#%% 4.2 Generating pairs

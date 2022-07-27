@@ -513,3 +513,90 @@ for cuisine in categories:
 print(restaurants['cuisine_type'].unique())
 
 #%% 4.2 Generating pairs
+
+import recordlinkage
+
+indexer = recordlinkage.Index()
+indexer.block('state')
+pairs = indexer.index(census_A, census_B)
+compare_cl = recordlinkage.Compare()
+
+compare_cl.exact('date_of_birth', 'date_of_birth', label='date_of_birth')
+compare_cl.exact('state', 'state', label='state')
+
+compare_cl.exact('surname', 'surname', threshold=0.85, label='surname')
+compare_cl.exact('address_1', 'address_1', threshold=0.85, label='address_1')
+
+potential_matches = compare_cl.compute(pairs, census_A, census_B)
+potential_matches
+potential_matches[potential_matches.sum(asix=1) >= 2]
+
+#%%
+# Create an indexer and object and find possible pairs
+indexer = recordlinkage.Index()
+
+# Block pairing on cuisine_type
+indexer.block('cuisine_type')
+
+# Generate pairs
+pairs = indexer.index(restaurants, restaurants_new)
+
+#%%
+# Create a comparison object
+comp_cl = recordlinkage.Compare()
+
+#%%
+# Create a comparison object
+comp_cl = recordlinkage.Compare()
+
+# Find exact matches on city, cuisine_types
+comp_cl.exact('city', 'city', label='city')
+comp_cl.exact('cuisine_type', 'cuisine_type', label='cuisine_type')
+
+# Find similar matches of rest_name
+comp_cl.string('rest_name', 'rest_name', label='name', threshold = 0.8)
+
+#%%
+# Create a comparison object
+comp_cl = recordlinkage.Compare()
+
+# Find exact matches on city, cuisine_types -
+comp_cl.exact('city', 'city', label='city')
+comp_cl.exact('cuisine_type', 'cuisine_type', label='cuisine_type')
+
+# Find similar matches of rest_name
+comp_cl.string('rest_name', 'rest_name', label='name', threshold = 0.8)
+
+# Get potential matches and print
+potential_matches = comp_cl.compute(pairs, restaurants, restaurants_new)
+print(potential_matches)
+
+#%%
+
+potential_matches[potential_matches.sum(axis = 1) >= 3]
+
+#%% 4.3 Linking DataFrames
+
+matches = potential_matches[potential_matches.sum(axis = 1) >= 3]
+matches.index
+
+dublicate_rows = matches.index.get_level_values(1)
+census_B_index
+
+census_B_duplicates = census_B[census_B.index.isin(dublicate_rows)]
+
+full_census = sensus_A.append(census_B_new)
+
+#%%
+# Isolate potential matches with row sum >=3
+matches = potential_matches[potential_matches.sum(axis=1) >= 3]
+
+# Get values of second column index of matches
+matching_indices = matches.index.get_level_values(1)
+
+# Subset restaurants_new based on non-duplicate values
+non_dup = restaurants_new[~restaurants_new.index.isin(matching_indices)]
+
+# Append non_dup to restaurants
+full_restaurants = restaurants.append(non_dup)
+print(full_restaurants)

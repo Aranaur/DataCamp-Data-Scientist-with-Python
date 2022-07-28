@@ -333,3 +333,59 @@ for ts in timestamps:
 print(dts)
 
 #%% 2.3 Working with durations
+
+start = datetime(2017, 10, 8, 23, 46, 47)
+end = datetime(2017, 10, 9, 0, 10, 57)
+
+duration = end - start
+duration.total_seconds()
+
+delta1 = timedelta(seconds=1)
+print(start)
+print(start + delta1)
+
+delta2 = timedelta(days=1, seconds=1)
+print(start + delta2)
+
+delta3 = timedelta(weeks=-1)
+print(start + delta3)
+
+delta4 = timedelta(weeks=1)
+print(start - delta4)
+
+#%%
+# Initialize a list for all the trip durations
+onebike_durations = []
+
+for trip in onebike_datetimes:
+    # Create a timedelta object corresponding to the length of the trip
+    trip_duration = trip['end'] - trip['start']
+
+    # Get the total elapsed seconds in trip_duration
+    trip_length_seconds = trip_duration.total_seconds()
+
+    # Append the results to our list
+    onebike_durations.append(trip_length_seconds)
+
+#%%
+# What was the total duration of all trips?
+total_elapsed_time = sum(onebike_durations)
+
+# What was the total number of trips?
+number_of_trips = len(onebike_durations)
+
+# Divide the total duration by the number of trips
+print(total_elapsed_time / number_of_trips)
+
+#%%
+# Calculate shortest and longest trips
+shortest_trip = min(onebike_durations)
+longest_trip = max(onebike_durations)
+
+# Print out the results
+print("The shortest trip was " + str(shortest_trip) + " seconds")
+print("The longest trip was " + str(longest_trip) + " seconds")
+
+#%% 3. Time Zones and Daylight Saving
+
+#%% 3.1 UTC offsets

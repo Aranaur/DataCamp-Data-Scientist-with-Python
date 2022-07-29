@@ -389,3 +389,257 @@ print("The longest trip was " + str(longest_trip) + " seconds")
 #%% 3. Time Zones and Daylight Saving
 
 #%% 3.1 UTC offsets
+from datetime import datetime, timezone, timedelta
+
+ET = timezone(timedelta(hours=-5))
+dt = datetime(2017, 12, 30, 15, 9, 3, tzinfo=ET)
+print(dt)
+
+IST = timezone(timedelta(hours=5, minutes=30))
+print(dt.astimezone(IST))
+
+print(dt)
+print(dt.replace(tzinfo=timezone.utc))
+print(dt.astimezone(timezone.utc))
+
+#%%
+# Import datetime, timezone
+from datetime import datetime, timezone, timedelta
+
+# October 1, 2017 at 15:26:26, UTC
+dt = datetime(2017, 10, 1, 15, 26, 26, tzinfo=timezone.utc)
+
+# Print results
+print(dt.isoformat())
+
+#%%
+# Import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
+
+# Create a timezone for Pacific Standard Time, or UTC-8
+pst = timezone(timedelta(hours=-8))
+
+# October 1, 2017 at 15:26:26, UTC-8
+dt = datetime(2017, 10, 1, 15, 26, 26, tzinfo=pst)
+
+# Print results
+print(dt.isoformat())
+
+#%%
+# Import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
+
+# Create a timezone for Australian Eastern Daylight Time, or UTC+11
+aedt = timezone(timedelta(hours=11))
+
+# October 1, 2017 at 15:26:26, UTC+11
+dt = datetime(2017, 10, 1, 15, 26, 26, tzinfo=aedt)
+
+# Print results
+print(dt.isoformat())
+
+#%%
+# Create a timezone object corresponding to UTC-4
+edt = timezone(timedelta(hours=-4))
+
+# Loop over trips, updating the start and end datetimes to be in UTC-4
+for trip in onebike_datetimes[:10]:
+    # Update trip['start'] and trip['end']
+    trip['start'] = trip['start'].replace(tzinfo=edt)
+    trip['end'] = trip['end'].replace(tzinfo=edt)
+
+#%%
+# Loop over the trips
+for trip in onebike_datetimes[:10]:
+    # Pull out the start
+    dt = trip['start']
+    # Move dt to be in UTC
+    dt = dt.astimezone(timezone.utc)
+
+    # Print the start time in UTC
+    print('Original:', trip['start'], '| UTC:', dt.isoformat())
+
+#%% 3.2 Time zone database
+from datetime import datetime
+from dateutil import tz
+
+et = tz.gettz('America/New_York')
+last = datetime(2017, 12, 30, 15, 9, 3, tzinfo=et)
+print(last)
+
+first = datetime(2017, 10, 1, 15, 23, 25, tzinfo=et)
+print(first)
+
+#%%
+# Import tz
+from dateutil import tz
+
+# Create a timezone object for Eastern Time
+et = tz.gettz('America/New_York')
+
+# Loop over trips, updating the datetimes to be in Eastern Time
+for trip in onebike_datetimes[:10]:
+    # Update trip['start'] and trip['end']
+    trip['start'] = trip['start'].replace(tzinfo=et)
+    trip['end'] = trip['end'].replace(tzinfo=et)
+
+#%%
+# Create the timezone object
+uk = tz.gettz('Europe/London')
+
+# Pull out the start of the first trip
+local = onebike_datetimes[0]['start']
+
+# What time was it in the UK?
+notlocal = local.astimezone(uk)
+
+# Print them out and see the difference
+print(local.isoformat())
+print(notlocal.isoformat())
+
+#%%
+# Create the timezone object
+ist = tz.gettz('Asia/Kolkata')
+
+# Pull out the start of the first trip
+local = onebike_datetimes[0]['start']
+
+# What time was it in India?
+notlocal = local.astimezone(ist)
+
+# Print them out and see the difference
+print(local.isoformat())
+print(notlocal.isoformat())
+
+#%%
+# Create the timezone object
+sm = tz.gettz('Pacific/Apia')
+
+# Pull out the start of the first trip
+local = onebike_datetimes[0]['start']
+
+# What time was it in Samoa?
+notlocal = local.astimezone(sm)
+
+# Print them out and see the difference
+print(local.isoformat())
+print(notlocal.isoformat())
+
+#%% 3.3 Starting daylight saving time
+
+spring_ahead_159am = datetime(2017, 3, 12, 1, 59, 59)
+spring_ahead_159am.isoformat()
+
+spring_ahead_3am = datetime(2017, 3, 12, 3, 0, 0)
+spring_ahead_3am.isoformat()
+
+(spring_ahead_3am - spring_ahead_159am).total_seconds()
+
+EST = timezone(timedelta(hours=-5))
+EDT = timezone(timedelta(hours=-4))
+
+spring_ahead_159am = spring_ahead_159am.replace(tzinfo=EST)
+spring_ahead_159am.isoformat()
+spring_ahead_3am = spring_ahead_3am.replace(tzinfo=EDT)
+spring_ahead_3am.isoformat()
+(spring_ahead_3am - spring_ahead_159am).total_seconds()
+
+eastern = tz.gettz('America/New_York')
+spring_ahead_159am = datetime(2017, 3, 12, 1, 59, 59, tzinfo=eastern)
+spring_ahead_3am = datetime(2017, 3, 12, 3, 0, 0, tzinfo=eastern)
+
+#%%
+# Import datetime, timedelta, tz, timezone
+from datetime import datetime, timedelta, timezone
+from dateutil import tz
+
+# Start on March 12, 2017, midnight, then add 6 hours
+start = datetime(2017, 3, 12, tzinfo=tz.gettz('America/New_York'))
+end = start + timedelta(hours=6)
+print(start.isoformat() + " to " + end.isoformat())
+
+#%%
+# Import datetime, timedelta, tz, timezone
+from datetime import datetime, timedelta, timezone
+from dateutil import tz
+
+# Start on March 12, 2017, midnight, then add 6 hours
+start = datetime(2017, 3, 12, tzinfo=tz.gettz('America/New_York'))
+end = start + timedelta(hours=6)
+print(start.isoformat() + " to " + end.isoformat())
+
+# How many hours have elapsed?
+print((end - start).total_seconds()/(60*60))
+
+#%%
+# Import datetime, timedelta, tz, timezone
+from datetime import datetime, timedelta, timezone
+from dateutil import tz
+
+# Start on March 12, 2017, midnight, then add 6 hours
+start = datetime(2017, 3, 12, tzinfo=tz.gettz('America/New_York'))
+end = start + timedelta(hours=6)
+print(start.isoformat() + " to " + end.isoformat())
+
+# How many hours have elapsed?
+print((end - start).total_seconds()/(60*60))
+
+# What if we move to UTC?
+print((end.astimezone(timezone.utc) - start.astimezone(timezone.utc)).total_seconds()/(60*60))
+
+#%%
+# Import datetime and tz
+from datetime import datetime
+from dateutil import tz
+
+# Create starting date
+dt = datetime(2000, 3, 29, tzinfo = tz.gettz('Europe/London'))
+
+# Loop over the dates, replacing the year, and print the ISO timestamp
+for y in range(2000, 2011):
+    print(dt.replace(year=y).isoformat())
+
+#%% 3.4 Ending daylight saving time
+
+eastern = tz.gettz('US/Eastern')
+first_1am = datetime(2017, 11, 5, 1, 0, 0, tzinfo=eastern)
+tz.datetime_exists(first_1am)
+
+second_1am = datetime(2017, 11, 5, 1, 0, 0, tzinfo=eastern)
+second_1am = tz.enfold(second_1am)
+(first_1am - second_1am).total_seconds()
+
+first_1am = first_1am.astimezone(tz.UTC)
+second_1am = second_1am.astimezone(tz.UTC)
+(first_1am - second_1am).total_seconds()
+
+#%%
+# Loop over trips
+for trip in onebike_datetimes:
+    # Rides with ambiguous start
+    if tz.datetime_ambiguous(trip['start']):
+        print("Ambiguous start at " + str(trip['start']))
+    # Rides with ambiguous end
+    if tz.datetime_ambiguous(trip['end']):
+        print("Ambiguous end at " + str(trip['end']))
+
+#%%
+trip_durations = []
+for trip in onebike_datetimes:
+    # When the start is later than the end, set the fold to be 1
+    if trip['start'] > trip['end']:
+        trip['end'] = tz.enfold(trip['end'])
+    # Convert to UTC
+    start = trip['start'].astimezone(tz.UTC)
+    end = trip['end'].astimezone(tz.UTC)
+
+    # Subtract the difference
+    trip_length_seconds = (end-start).total_seconds()
+    trip_durations.append(trip_length_seconds)
+
+# Take the shortest trip duration
+print("Shortest trip: " + str(min(trip_durations)))
+
+#%% 4. Easy and Powerful: Dates and Times in Pandas
+
+#%% 4.1 Reading date and time data in Pandas

@@ -238,7 +238,7 @@ print(dt)
 ts = 1514665153.0  # sec since 1 January 1970
 print(datetime.fromtimestamp(ts))
 
-#%%
+# %%
 # Import the datetime class
 from datetime import datetime
 
@@ -254,7 +254,7 @@ d = datetime.strptime(s, fmt)
 # Print d
 print(d)
 
-#%%
+# %%
 # Import the datetime class
 from datetime import datetime
 
@@ -270,7 +270,7 @@ d = datetime.strptime(s, fmt)
 # Print d
 print(d)
 
-#%%
+# %%
 # Import the datetime class
 from datetime import datetime
 
@@ -286,7 +286,7 @@ d = datetime.strptime(s, fmt)
 # Print d
 print(d)
 
-#%%
+# %%
 # Write down the format string
 fmt = "%Y-%m-%d %H:%M:%S"
 
@@ -301,7 +301,7 @@ for (start, end) in onebike_datetime_strings:
     # Append the trip
     onebike_datetimes.append(trip)
 
-#%%
+# %%
 # Import datetime
 from datetime import datetime
 
@@ -315,7 +315,7 @@ fmt = "%Y-%m-%dT%H:%M:%S"
 print(first_start.isoformat())
 print(first_start.strftime(fmt))
 
-#%%
+# %%
 # Import datetime
 from datetime import datetime
 
@@ -332,7 +332,7 @@ for ts in timestamps:
 # Print results
 print(dts)
 
-#%% 2.3 Working with durations
+# %% 2.3 Working with durations
 
 start = datetime(2017, 10, 8, 23, 46, 47)
 end = datetime(2017, 10, 9, 0, 10, 57)
@@ -353,7 +353,7 @@ print(start + delta3)
 delta4 = timedelta(weeks=1)
 print(start - delta4)
 
-#%%
+# %%
 # Initialize a list for all the trip durations
 onebike_durations = []
 
@@ -367,7 +367,7 @@ for trip in onebike_datetimes:
     # Append the results to our list
     onebike_durations.append(trip_length_seconds)
 
-#%%
+# %%
 # What was the total duration of all trips?
 total_elapsed_time = sum(onebike_durations)
 
@@ -377,7 +377,7 @@ number_of_trips = len(onebike_durations)
 # Divide the total duration by the number of trips
 print(total_elapsed_time / number_of_trips)
 
-#%%
+# %%
 # Calculate shortest and longest trips
 shortest_trip = min(onebike_durations)
 longest_trip = max(onebike_durations)
@@ -386,9 +386,9 @@ longest_trip = max(onebike_durations)
 print("The shortest trip was " + str(shortest_trip) + " seconds")
 print("The longest trip was " + str(longest_trip) + " seconds")
 
-#%% 3. Time Zones and Daylight Saving
+# %% 3. Time Zones and Daylight Saving
 
-#%% 3.1 UTC offsets
+# %% 3.1 UTC offsets
 from datetime import datetime, timezone, timedelta
 
 ET = timezone(timedelta(hours=-5))
@@ -402,7 +402,7 @@ print(dt)
 print(dt.replace(tzinfo=timezone.utc))
 print(dt.astimezone(timezone.utc))
 
-#%%
+# %%
 # Import datetime, timezone
 from datetime import datetime, timezone, timedelta
 
@@ -412,7 +412,7 @@ dt = datetime(2017, 10, 1, 15, 26, 26, tzinfo=timezone.utc)
 # Print results
 print(dt.isoformat())
 
-#%%
+# %%
 # Import datetime, timedelta, timezone
 from datetime import datetime, timedelta, timezone
 
@@ -425,7 +425,7 @@ dt = datetime(2017, 10, 1, 15, 26, 26, tzinfo=pst)
 # Print results
 print(dt.isoformat())
 
-#%%
+# %%
 # Import datetime, timedelta, timezone
 from datetime import datetime, timedelta, timezone
 
@@ -438,7 +438,7 @@ dt = datetime(2017, 10, 1, 15, 26, 26, tzinfo=aedt)
 # Print results
 print(dt.isoformat())
 
-#%%
+# %%
 # Create a timezone object corresponding to UTC-4
 edt = timezone(timedelta(hours=-4))
 
@@ -448,7 +448,7 @@ for trip in onebike_datetimes[:10]:
     trip['start'] = trip['start'].replace(tzinfo=edt)
     trip['end'] = trip['end'].replace(tzinfo=edt)
 
-#%%
+# %%
 # Loop over the trips
 for trip in onebike_datetimes[:10]:
     # Pull out the start
@@ -459,7 +459,7 @@ for trip in onebike_datetimes[:10]:
     # Print the start time in UTC
     print('Original:', trip['start'], '| UTC:', dt.isoformat())
 
-#%% 3.2 Time zone database
+# %% 3.2 Time zone database
 from datetime import datetime
 from dateutil import tz
 
@@ -470,7 +470,7 @@ print(last)
 first = datetime(2017, 10, 1, 15, 23, 25, tzinfo=et)
 print(first)
 
-#%%
+# %%
 # Import tz
 from dateutil import tz
 
@@ -483,7 +483,7 @@ for trip in onebike_datetimes[:10]:
     trip['start'] = trip['start'].replace(tzinfo=et)
     trip['end'] = trip['end'].replace(tzinfo=et)
 
-#%%
+# %%
 # Create the timezone object
 uk = tz.gettz('Europe/London')
 
@@ -497,7 +497,7 @@ notlocal = local.astimezone(uk)
 print(local.isoformat())
 print(notlocal.isoformat())
 
-#%%
+# %%
 # Create the timezone object
 ist = tz.gettz('Asia/Kolkata')
 
@@ -511,7 +511,7 @@ notlocal = local.astimezone(ist)
 print(local.isoformat())
 print(notlocal.isoformat())
 
-#%%
+# %%
 # Create the timezone object
 sm = tz.gettz('Pacific/Apia')
 
@@ -525,7 +525,7 @@ notlocal = local.astimezone(sm)
 print(local.isoformat())
 print(notlocal.isoformat())
 
-#%% 3.3 Starting daylight saving time
+# %% 3.3 Starting daylight saving time
 
 spring_ahead_159am = datetime(2017, 3, 12, 1, 59, 59)
 spring_ahead_159am.isoformat()
@@ -548,7 +548,7 @@ eastern = tz.gettz('America/New_York')
 spring_ahead_159am = datetime(2017, 3, 12, 1, 59, 59, tzinfo=eastern)
 spring_ahead_3am = datetime(2017, 3, 12, 3, 0, 0, tzinfo=eastern)
 
-#%%
+# %%
 # Import datetime, timedelta, tz, timezone
 from datetime import datetime, timedelta, timezone
 from dateutil import tz
@@ -558,20 +558,7 @@ start = datetime(2017, 3, 12, tzinfo=tz.gettz('America/New_York'))
 end = start + timedelta(hours=6)
 print(start.isoformat() + " to " + end.isoformat())
 
-#%%
-# Import datetime, timedelta, tz, timezone
-from datetime import datetime, timedelta, timezone
-from dateutil import tz
-
-# Start on March 12, 2017, midnight, then add 6 hours
-start = datetime(2017, 3, 12, tzinfo=tz.gettz('America/New_York'))
-end = start + timedelta(hours=6)
-print(start.isoformat() + " to " + end.isoformat())
-
-# How many hours have elapsed?
-print((end - start).total_seconds()/(60*60))
-
-#%%
+# %%
 # Import datetime, timedelta, tz, timezone
 from datetime import datetime, timedelta, timezone
 from dateutil import tz
@@ -582,24 +569,37 @@ end = start + timedelta(hours=6)
 print(start.isoformat() + " to " + end.isoformat())
 
 # How many hours have elapsed?
-print((end - start).total_seconds()/(60*60))
+print((end - start).total_seconds() / (60 * 60))
+
+# %%
+# Import datetime, timedelta, tz, timezone
+from datetime import datetime, timedelta, timezone
+from dateutil import tz
+
+# Start on March 12, 2017, midnight, then add 6 hours
+start = datetime(2017, 3, 12, tzinfo=tz.gettz('America/New_York'))
+end = start + timedelta(hours=6)
+print(start.isoformat() + " to " + end.isoformat())
+
+# How many hours have elapsed?
+print((end - start).total_seconds() / (60 * 60))
 
 # What if we move to UTC?
-print((end.astimezone(timezone.utc) - start.astimezone(timezone.utc)).total_seconds()/(60*60))
+print((end.astimezone(timezone.utc) - start.astimezone(timezone.utc)).total_seconds() / (60 * 60))
 
-#%%
+# %%
 # Import datetime and tz
 from datetime import datetime
 from dateutil import tz
 
 # Create starting date
-dt = datetime(2000, 3, 29, tzinfo = tz.gettz('Europe/London'))
+dt = datetime(2000, 3, 29, tzinfo=tz.gettz('Europe/London'))
 
 # Loop over the dates, replacing the year, and print the ISO timestamp
 for y in range(2000, 2011):
     print(dt.replace(year=y).isoformat())
 
-#%% 3.4 Ending daylight saving time
+# %% 3.4 Ending daylight saving time
 
 eastern = tz.gettz('US/Eastern')
 first_1am = datetime(2017, 11, 5, 1, 0, 0, tzinfo=eastern)
@@ -613,7 +613,7 @@ first_1am = first_1am.astimezone(tz.UTC)
 second_1am = second_1am.astimezone(tz.UTC)
 (first_1am - second_1am).total_seconds()
 
-#%%
+# %%
 # Loop over trips
 for trip in onebike_datetimes:
     # Rides with ambiguous start
@@ -623,7 +623,7 @@ for trip in onebike_datetimes:
     if tz.datetime_ambiguous(trip['end']):
         print("Ambiguous end at " + str(trip['end']))
 
-#%%
+# %%
 trip_durations = []
 for trip in onebike_datetimes:
     # When the start is later than the end, set the fold to be 1
@@ -634,12 +634,204 @@ for trip in onebike_datetimes:
     end = trip['end'].astimezone(tz.UTC)
 
     # Subtract the difference
-    trip_length_seconds = (end-start).total_seconds()
+    trip_length_seconds = (end - start).total_seconds()
     trip_durations.append(trip_length_seconds)
 
 # Take the shortest trip duration
 print("Shortest trip: " + str(min(trip_durations)))
 
-#%% 4. Easy and Powerful: Dates and Times in Pandas
+# %% 4. Easy and Powerful: Dates and Times in Pandas
 
-#%% 4.1 Reading date and time data in Pandas
+# %% 4.1 Reading date and time data in Pandas
+rides.iloc[0:3]
+rides.head(3)
+
+rides['Start date']
+rides.iloc[2]
+
+rides = pd.read_csv('data/19/capital-onebike.csv', parse_dates=['Start date', 'End date'])
+
+rides['Start date'] = pd.to_datetime(rides['Start date'],
+                                     format='%Y-%m-%d %H:%M:%S')
+
+rides['Start date'].iloc[2]
+rides['Duration'] = rides['End date'] - rides['Start date']
+rides['Duration'].head(5)
+
+rides['Duration'] \
+    .dt.total_seconds() \
+    .head(5)
+
+# %%
+# Import pandas
+import pandas as pd
+
+# Load CSV into the rides variable
+rides = pd.read_csv('capital-onebike.csv',
+                    parse_dates=['Start date', 'End date'])
+
+# Print the initial (0th) row
+print(rides.iloc[0])
+
+# %%
+# Subtract the start date from the end date
+ride_durations = rides['End date'] - rides['Start date']
+
+# Convert the results to seconds
+rides['Duration'] = ride_durations.dt.total_seconds()
+
+print(rides['Duration'].head())
+
+# %% 4.2 Summarizing datetime data in Pandas
+rides['Duration'].mean()
+rides['Duration'].sum()
+
+rides['Duration'].sum() / timedelta(days=91)
+
+rides['Member type'].value_counts()
+rides['Member type'].value_counts() / len(rides)
+
+rides['Duration seconds'] = rides['Duration'].dt.total_seconds()
+rides.groupby('Member type')['Duration seconds'].mean()
+
+rides.resample('M', on='Start date')['Duration seconds'].mean()
+
+rides.groupby('Member type').size()
+rides.groupby('Member type').first()
+
+rides \
+    .resample('M', on='Start date') \
+    ['Duration seconds'] \
+    .mean() \
+    .plot()
+
+rides \
+    .resample('D', on='Start date') \
+    ['Duration seconds'] \
+    .mean() \
+    .plot()
+
+# %%
+# Create joyrides
+joyrides = (rides['Start station'] == rides['End station'])
+
+# Total number of joyrides
+print("{} rides were joyrides".format(joyrides.sum()))
+
+# Median of all rides
+print("The median duration overall was {:.2f} seconds" \
+      .format(rides['Duration'].median()))
+
+# Median of joyrides
+print("The median duration for joyrides was {:.2f} seconds" \
+      .format(rides[joyrides]['Duration'].median()))
+
+# %%
+# Import matplotlib
+import matplotlib.pyplot as plt
+
+# Resample rides to daily, take the size, plot the results
+rides.resample('D', on = 'Start date') \
+    .size() \
+    .plot(ylim = [0, 15])
+
+# Show the results
+plt.show()
+
+#%%
+# Import matplotlib
+import matplotlib.pyplot as plt
+
+# Resample rides to monthly, take the size, plot the results
+rides.resample('M', on = 'Start date') \
+    .size() \
+    .plot(ylim = [0, 150])
+
+# Show the results
+plt.show()
+
+#%%
+# Resample rides to be monthly on the basis of Start date
+monthly_rides = rides.resample('M', on='Start date')['Member type']
+
+# Take the ratio of the .value_counts() over the total number of rides
+print(monthly_rides.value_counts() / monthly_rides.size())
+
+#%%
+# Group rides by member type, and resample to the month
+grouped = rides.groupby('Member type') \
+    .resample('M', on='Start date')
+
+# Print the median duration for each group
+print(grouped['Duration'].median())
+
+#%% 4.3 Additional datetime methods in Pandas
+rides['Duration'].dt.total_seconds().min()
+
+rides['Start date'].head(3)
+
+rides['Start date'].head(3) \
+    .dt.tz_localize('America/New_York')
+
+rides['Start date'] = rides['Start date'] \
+    .dt.tz_localize('America/New_York', ambiguous='NaT')
+
+rides['End date'] = rides['End date'] \
+    .dt.tz_localize('America/New_York', ambiguous='NaT')
+
+rides['Duration'] = rides['End date'] - rides['Start date']
+rides['Duration'].dt.total_seconds().min()
+rides.iloc[129]
+
+rides['Start date'] \
+    .head(3) \
+    .dt.year
+
+rides['Start date'] \
+    .head(3) \
+    .dt.day_name()
+
+rides['End date'] \
+    .shift(1) \
+    .head(3)
+
+#%%
+# Localize the Start date column to America/New_York
+rides['Start date'] = rides['Start date'].dt.tz_localize('America/New_York', ambiguous='NaT')
+
+# Print first value
+print(rides['Start date'].iloc[0])
+
+#%%
+# Localize the Start date column to America/New_York
+rides['Start date'] = rides['Start date'].dt.tz_localize('America/New_York',
+                                                         ambiguous='NaT')
+
+# Print first value
+print(rides['Start date'].iloc[0])
+
+# Convert the Start date column to Europe/London
+rides['Start date'] = rides['Start date'].dt.tz_convert('Europe/London')
+
+# Print the new value
+print(rides['Start date'].iloc[0])
+
+#%%
+# Add a column for the weekday of the start of the ride
+rides['Ride start weekday'] = rides['Start date'].dt.day_name()
+
+# Print the median trip time per weekday
+print(rides.groupby('Ride start weekday')['Duration'].median())
+
+#%%
+# Shift the index of the end date up one; now subract it from the start date
+rides['Time since'] = rides['Start date'] - (rides['End date'].shift(1))
+
+# Move from a timedelta to a number of seconds, which is easier to work with
+rides['Time since'] = rides['Time since'].dt.total_seconds()
+
+# Resample to the month
+monthly = rides.resample('M', on='Start date')
+
+# Print the average hours between rides each month
+print(monthly['Time since'].mean()/(60*60))

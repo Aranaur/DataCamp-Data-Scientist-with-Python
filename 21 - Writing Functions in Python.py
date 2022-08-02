@@ -266,3 +266,129 @@ df['y1_z'] = standardize(df['y1_gpa'])
 df['y2_z'] = standardize(df['y2_gpa'])
 df['y3_z'] = standardize(df['y3_gpa'])
 df['y4_z'] = standardize(df['y4_gpa'])
+
+
+#%%
+def mean(values):
+    """Get the mean of a sorted list of values
+
+    Args:
+      values (iterable of float): A list of numbers
+
+    Returns:
+      float
+    """
+    # Write the mean() function
+    mean = sum(values) / len(values)
+    return mean
+
+
+#%%
+def median(values):
+    """Get the median of a sorted list of values
+
+    Args:
+      values (iterable of float): A list of numbers
+
+    Returns:
+      float
+    """
+    # Write the median() function
+    midpoint = int(len(values) / 2)
+    if len(values) % 2 == 0:
+        median = (values[midpoint - 1] + values[midpoint]) / 2
+    else:
+        median = values[midpoint]
+    return median
+
+
+#%% 1.3 Pass by assignment
+def foo(x):
+    x[0] = 99
+
+my_list = [1, 2, 3]
+foo(my_list)  # list is mutable
+
+
+def bar(x):
+    x = x + 90
+
+my_var = 3
+bar(my_var)
+my_var  # int can`t be changed
+
+
+#%%
+a = [1, 2, 3]
+b = a
+a.append(4)
+b
+b.append(5)
+a
+
+# Mutable: list, dict, set, bytearray, object, functions etc
+# Immutable: int, float, bool, string, bytes, tuple, frozenset, None
+
+def foo(var=[]):
+    var.append(1)
+    return var
+
+
+foo()
+foo()
+
+
+def foo(var=None):
+    if var is None:
+        var=[]
+    var.append(1)
+    return var
+
+foo()
+foo()
+
+#%%
+def store_lower(_dict, _string):
+    """Add a mapping between `_string` and a lowercased version of `_string` to `_dict`
+
+    Args:
+      _dict (dict): The dictionary to update.
+      _string (str): The string to add.
+    """
+    orig_string = _string
+    _string = _string.lower()
+    _dict[orig_string] = _string
+
+d = {}
+s = 'Hello'
+
+store_lower(d, s)
+
+# d = {'Hello': 'hello'}, s = 'Hello'
+
+
+#%%
+# Use an immutable variable for the default argument
+def better_add_column(values, df=None):
+    """Add a column of `values` to a DataFrame `df`.
+    The column will be named "col_<n>" where "n" is
+    the numerical index of the column.
+
+    Args:
+      values (iterable): The values of the new column
+      df (DataFrame, optional): The DataFrame to update.
+        If no DataFrame is passed, one is created by default.
+
+    Returns:
+      DataFrame
+    """
+    # Update the function to create a default DataFrame
+    if df is None:
+        df = pandas.DataFrame()
+    df['col_{}'.format(len(df.columns))] = values
+    return df
+
+
+#%% 2. Context Managers
+
+#%% 2.1 Using context managers

@@ -1,6 +1,9 @@
 # %% 1. Writing Functions in Python
 
 # %% 1.1 Docstrings
+import contextlib
+import os
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -392,3 +395,216 @@ def better_add_column(values, df=None):
 #%% 2. Context Managers
 
 #%% 2.1 Using context managers
+with open('my_file.txt') as my_file:
+    text = my_file.read()
+    length = len(text)
+
+print('The file is {} characters long'.format(length))
+
+# with <context-manager>(<args>):
+#     # Run code
+#     # This code is running inside the context
+#
+# # This code runs after the context is removed
+
+#%%
+# Open "alice.txt" and assign the file to "file"
+with open('alice.txt') as file:
+    text = file.read()
+
+n = 0
+for word in text.split():
+    if word.lower() in ['cat', 'cats']:
+        n += 1
+
+print('Lewis Carroll uses the word "cat" {} times'.format(n))
+
+#%%
+image = get_image_from_instagram()
+
+# Time how long process_with_numpy(image) takes to run
+with timer():
+    print('Numpy version')
+    process_with_numpy(image)
+
+# Time how long process_with_pytorch(image) takes to run
+with timer():
+    print('Pytorch version')
+    process_with_pytorch(image)
+
+#%% 2.2 Writing context managers
+
+@contextlib.contextmanager
+def my_context():
+    # add ant set up code
+    yield
+    # add any teardown code
+
+#%%
+@contextlib.contextmanager
+def my_context():
+    print('hello')
+    yield 42
+    print('goodbye')
+
+with my_context() as foo:
+    print('foo is {}'.format(foo))
+
+#%%
+@contextlib.contextmanager
+def database(url):
+    # set up database conn
+    df = posgres.connect(url)
+
+    yield db
+
+    # tear down database conn
+    db.disconnect()
+
+url = 'http://datacamp.com/data'
+with database(url) as my_db:
+    course_list = my_db.execute(
+        'SELECT * FROM courses'
+    )
+
+#%%
+@contextlib.contextmanager
+def in_dir(path):
+    old_dir = os.getcwd()
+    os.chdir(path)
+    yield
+    os.chdir(old_dir)
+
+with in_dir('/data/project_1'):
+    project_files = os.listdir()
+
+#%%
+# Add a decorator that will make timer() a context manager
+@contextlib.contextmanager
+def timer():
+    """Time the execution of a context block.
+
+    Yields:
+      None
+    """
+    start = time.time()
+    # Send control back to the context block
+    yield
+    end = time.time()
+    print('Elapsed: {:.2f}s'.format(end - start))
+
+with timer():
+    print('This should take approximately 0.25 seconds')
+    time.sleep(0.25)
+
+#%%
+@contextlib.contextmanager
+def open_read_only(filename):
+    """Open a file in read-only mode.
+
+    Args:
+      filename (str): The location of the file to read
+
+    Yields:
+      file object
+    """
+    read_only_file = open(filename, mode='r')
+    # Yield read_only_file so it can be assigned to my_file
+    yield read_only_file
+    # Close read_only_file
+    read_only_file.close()
+
+with open_read_only('my_file.txt') as my_file:
+    print(my_file.read())
+
+#%% 2.3 Advanced topics
+
+# not bad
+def copy(src, dst):
+    """Copy the contents of one file to another
+    :arg
+        src (str): File name of the file to be copied.
+        dst (str): Where to write the new file.
+    """
+    with open(src) as f_src:
+        contents = f_src.read()
+    with open(dst, 'w') as f_dst:
+        f_dst.write(contents)
+
+# better
+def copy(src, dst):
+    """Copy the contents of one file to another
+    :arg
+        src (str): File name of the file to be copied.
+        dst (str): Where to write the new file.
+    """
+    with open(src) as f_src:
+        with open(dst) as f_dst:
+            for line in f_src:
+                f_dst.write(line)
+
+#%%
+def get_printer(ip):
+    p = connect_to_printer(ip)
+    yield
+    p.disconnect()
+    print('disconnected from printer')
+
+doc = {'text': 'This is my text.'}
+
+with get_printer('10.0.34.111') as printer:
+    printer.print_page(doc['txt'])  # error here: txt != text
+
+
+# try:
+#   code that might raise an error
+# except:
+#   do something about the error
+# finally:
+#   this code runs no matter what
+
+def get_printer(ip):
+    p = connect_to_printer(ip)
+
+    try:
+        yield
+    finally:
+        p.disconnect()
+        print('disconnected from printer')
+
+with get_printer('10.0.34.111') as printer:
+    printer.print_page(doc['txt'])  # error here: txt != text
+
+#%%
+# Use the "stock('NVDA')" context manager
+# and assign the result to the variable "nvda"
+with stock('NVDA') as nvda:
+    # Open 'NVDA.txt' for writing as f_out
+    with open('NVDA.txt', 'w') as f_out:
+        for _ in range(10):
+            value = nvda.price()
+            print('Logging ${:.2f} for NVDA'.format(value))
+            f_out.write('{:.2f}\n'.format(value))
+
+#%%
+def in_dir(directory):
+    """Change current working directory to `directory`,
+    allow the user to run some code, and change back.
+
+    Args:
+      directory (str): The path to a directory to work in.
+    """
+    current_dir = os.getcwd()
+    os.chdir(directory)
+
+    # Add code that lets you handle errors
+    try:
+        yield
+    # Ensure the directory is reset,
+    # whether there was an error or not
+    finally:
+        os.chdir(current_dir)
+
+#%% 3. Decorators
+
+#%% 3.1 Functions are objects

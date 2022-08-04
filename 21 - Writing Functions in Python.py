@@ -608,3 +608,471 @@ def in_dir(directory):
 #%% 3. Decorators
 
 #%% 3.1 Functions are objects
+def my_function():
+    print('Hello!')
+
+x = my_function
+type(x)
+x()
+
+list_of_functions = [my_function, open, print]
+list_of_functions[2]("I'm printing with an element of a list!")
+
+#%%
+dict_of_functions = {
+    'func1': my_function,
+    'func2': open,
+    'func3': print
+}
+
+dict_of_functions['func3']("I'm printing with a value of a dict!")
+
+def my_function():
+    return 42
+
+x = my_function
+my_function()
+x()
+
+#%%
+def hes_docstring(func):
+    """Check to see if the function `func`
+    has a docstring
+
+    :arg:
+        func (callable): A function
+
+    :returns
+        bool
+    """
+    return func.__doc__ is not None
+
+def no():
+    return 42
+
+def yes():
+    """Return the value 42
+    """
+    return 42
+
+hes_docstring(no)
+hes_docstring(yes)
+
+#%%
+def foo():
+    x = [3, 6, 9]
+
+    def bar(y):
+        print(y)
+
+    for value in x:
+        bar(x)
+
+#%%
+def foo(x, y):
+    if 4 < x < 10 and 4 < y < 10:
+        print(x * y)
+
+def foo(x, y):
+    def in_range(v):
+        return 4 < v < 10
+
+    if in_range(x) and in_range(y):
+        print(x * y)
+
+#%%
+def get_function():
+    def print_me(s):
+        print(s)
+    return print_me
+
+new_func = get_function()
+new_func('This is sentence.')
+
+#%%
+# Add the missing function references to the function map
+function_map = {
+    'mean': mean,
+    'std': std,
+    'minimum': minimum,
+    'maximum': maximum
+}
+
+data = load_data()
+print(data)
+
+func_name = get_user_input()
+
+# Call the chosen function and pass "data" as an argument
+function_map[func_name](data)
+
+#%%
+# Call has_docstring() on the load_and_plot_data() function
+ok = has_docstring(load_and_plot_data)
+
+if not ok:
+    print("load_and_plot_data() doesn't have a docstring!")
+else:
+    print("load_and_plot_data() looks ok")
+
+#%%
+# Call has_docstring() on the as_2D() function
+ok = has_docstring(as_2D)
+
+if not ok:
+    print("as_2D() doesn't have a docstring!")
+else:
+    print("as_2D() looks ok")
+
+#%%
+# Call has_docstring() on the log_product() function
+ok = has_docstring(log_product)
+
+if not ok:
+    print("log_product() doesn't have a docstring!")
+else:
+    print("log_product() looks ok")
+
+#%%
+def create_math_function(func_name):
+    if func_name == 'add':
+        def add(a, b):
+            return a + b
+        return add
+    elif func_name == 'subtract':
+        # Define the subtract() function
+        def subtract(a, b):
+            return a - b
+        return subtract
+    else:
+        print("I don't know that one")
+
+add = create_math_function('add')
+print('5 + 2 = {}'.format(add(5, 2)))
+
+subtract = create_math_function('subtract')
+print('5 - 2 = {}'.format(subtract(5, 2)))
+
+#%% 3.2 Scope
+x = 7
+y = 200
+print(x)
+
+def foo():
+    x = 42
+    print(x)
+    print(y)
+
+foo()
+print(x)
+
+#%%
+x = 7
+
+def foo():
+    global x
+    x = 42
+    print(x)
+
+foo()
+print(x)
+
+#%%
+def foo():
+    x = 10
+    def bar():
+        x = 200
+        print(x)
+    bar()
+    print(x)
+
+foo()
+
+def foo():
+    x = 10
+    def bar():
+        nonlocal x
+        x = 200
+        print(x)
+    bar()
+    print(x)
+
+foo()
+
+#%%
+x = 50
+
+def one():
+    x = 10
+
+def two():
+    global x
+    x = 30
+
+def three():
+    x = 100
+    print(x)
+
+for func in [one, two, three]:
+    func()
+    print(x)
+
+# 50, 30, 100, 30
+
+#%%
+call_count = 0
+
+def my_function():
+    # Use a keyword that lets us update call_count
+    global call_count
+    call_count += 1
+
+    print("You've called my_function() {} times!".format(
+        call_count
+    ))
+
+for _ in range(20):
+    my_function()
+
+#%%
+def read_files():
+    file_contents = None
+
+    def save_contents(filename):
+        # Add a keyword that lets us modify file_contents
+        nonlocal file_contents
+        if file_contents is None:
+            file_contents = []
+        with open(filename) as fin:
+            file_contents.append(fin.read())
+
+    for filename in ['1984.txt', 'MobyDick.txt', 'CatsEye.txt']:
+        save_contents(filename)
+
+    return file_contents
+
+print('\n'.join(read_files()))
+
+#%%
+def wait_until_done():
+    def check_is_done():
+        # Add a keyword so that wait_until_done()
+        # doesn't run forever
+        global done
+        if random.random() < 0.1:
+            done = True
+
+    while not done:
+        check_is_done()
+
+done = False
+wait_until_done()
+
+print('Work done? {}'.format(done))
+
+#%% 3.3 Closures
+def foo():
+    a = 5
+    def bar():
+        print(a)
+    return bar
+
+func = foo()
+func()
+
+type(func.__closure__)
+len(func.__closure__)
+func.__closure__[0].cell_contents
+
+#%%
+x = 25
+def foo(value):
+    def bar():
+        print(value)
+    return bar
+
+my_func = foo(x)
+my_func()
+
+del(x)
+my_func()
+
+len(my_func.__closure__)
+my_func.__closure__[0].cell_contents
+
+
+x = 25
+x = foo(x)
+x()
+len(x.__closure__)
+x.__closure__[0].cell_contents
+
+#%%
+def return_a_func(arg1, arg2):
+    def new_func():
+        print('arg1 was {}'.format(arg1))
+        print('arg2 was {}'.format(arg2))
+    return new_func
+
+my_func = return_a_func(2, 17)
+
+# Show that my_func()'s closure is not None
+print(my_func.__closure__ is not None)
+
+#%%
+def return_a_func(arg1, arg2):
+    def new_func():
+        print('arg1 was {}'.format(arg1))
+        print('arg2 was {}'.format(arg2))
+    return new_func
+
+my_func = return_a_func(2, 17)
+
+print(my_func.__closure__ is not None)
+
+# Show that there are two variables in the closure
+print(len(my_func.__closure__) == 2)
+
+#%%
+def return_a_func(arg1, arg2):
+    def new_func():
+        print('arg1 was {}'.format(arg1))
+        print('arg2 was {}'.format(arg2))
+    return new_func
+
+my_func = return_a_func(2, 17)
+
+print(my_func.__closure__ is not None)
+print(len(my_func.__closure__) == 2)
+
+# Get the values of the variables in the closure
+closure_values = [
+    my_func.__closure__[i].cell_contents for i in range(2)
+]
+print(closure_values == [2, 17])
+
+#%%
+def my_special_function():
+    print('You are running my_special_function()')
+
+def get_new_func(func):
+    def call_func():
+        func()
+    return call_func
+
+new_func = get_new_func(my_special_function)
+
+# Redefine my_special_function() to just print "hello"
+def my_special_function():
+    print('hello')
+
+new_func()
+
+#%%
+def my_special_function():
+    print('You are running my_special_function()')
+
+def get_new_func(func):
+    def call_func():
+        func()
+    return call_func
+
+new_func = get_new_func(my_special_function)
+
+# Delete my_special_function()
+del(my_special_function)
+
+new_func()
+
+#%%
+def my_special_function():
+    print('You are running my_special_function()')
+
+def get_new_func(func):
+    def call_func():
+        func()
+    return call_func
+
+# Overwrite `my_special_function` with the new function
+my_special_function = get_new_func(my_special_function)
+
+my_special_function()
+
+#%% 3.4 Decorators
+# @double_args
+def multiply(a, b):
+    return a * b
+multiply(1, 5)
+
+#%%
+def multiply(a, b):
+    return a * b
+def double_args(func):
+    return func
+new_multiply = double_args(multiply)
+new_multiply(1, 5)
+
+#%%
+def multiply(a, b):
+    return a * b
+def double_args(func):
+    def wrapper(a, b):
+        return func(a, b)
+    return wrapper
+new_multiply = double_args(multiply)
+new_multiply(1, 5)
+
+#%%
+def multiply(a, b):
+    return a * b
+def double_args(func):
+    def wrapper(a, b):
+        return func(a * 2, b * 2)
+    return wrapper
+new_multiply = double_args(multiply)
+new_multiply(1, 5)
+
+multiply.__closure__[0].cell_contents
+
+#%%
+@double_args
+def multiply(a, b):
+    return a * b
+multiply(1, 5)
+
+#%%
+def my_function(a, b, c):
+    print(a + b + c)
+
+# Decorate my_function() with the print_args() decorator
+my_function = print_args(my_function)
+
+my_function(1, 2, 3)
+
+#%%
+# Decorate my_function() with the print_args() decorator
+@print_args
+def my_function(a, b, c):
+    print(a + b + c)
+
+my_function(1, 2, 3)
+
+#%%
+def print_before_and_after(func):
+    def wrapper(*args):
+        print('Before {}'.format(func.__name__))
+        # Call the function being decorated with *args
+        func(*args)
+        print('After {}'.format(func.__name__))
+    # Return the nested function
+    return wrapper
+
+@print_before_and_after
+def multiply(a, b):
+    print(a * b)
+
+multiply(5, 10)
+
+#%% 4. More on Decorators
+
+#%% 4.1 Real-world examples

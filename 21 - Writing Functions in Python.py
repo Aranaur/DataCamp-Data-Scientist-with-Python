@@ -1076,3 +1076,438 @@ multiply(5, 10)
 #%% 4. More on Decorators
 
 #%% 4.1 Real-world examples
+import time
+
+def timer(func):
+    """A decorator that prints how long a function took to run.
+
+    :arg
+        func (callable): The function being decorated.
+
+    :returns
+        callable: The decorated function.
+    """
+    def wrapper(*args, **kwargs):
+        t_start = time.time()
+        result = func(*args, **kwargs)
+        t_total = time.time() - t_start
+        print('{} took {}s'.format(func.__name__, t_total))
+        return result
+    return wrapper
+
+@timer
+def sleep_n_seconds(n):
+    time.sleep(n)
+
+sleep_n_seconds(5)
+sleep_n_seconds(10)
+
+def memoize(func):
+    """Store the result of the decorated func for fast lookup
+    """
+    cache = {}
+    def wrapper(*args, **kwargs):
+        if (args, kwargs) not in cache:
+            cache[(args, kwargs)] = func(*args, **kwargs)
+        return cache[(args, kwargs)]
+    return wrapper
+
+@memoize
+def slow_function(a, b):
+    print('Sleeping...')
+    time.sleep(5)
+    return a + b
+
+slow_function(3, 4)
+
+#%%
+def print_return_type(func):
+    # Define wrapper(), the decorated function
+    def wrapper(*args, **kwargs):
+        # Call the function being decorated
+        result = func(*args, **kwargs)
+        print('{}() returned type {}'.format(
+            func.__name__, type(result)
+        ))
+        return result
+    # Return the decorated function
+    return wrapper
+
+@print_return_type
+def foo(value):
+    return value
+
+print(foo(42))
+print(foo([1, 2, 3]))
+print(foo({'a': 42}))
+
+#%%
+def counter(func):
+    def wrapper(*args, **kwargs):
+        wrapper.count += 1
+        # Call the function being decorated and return the result
+        return func
+    wrapper.count = 0
+    # Return the new decorated function
+    return wrapper
+
+# Decorate foo() with the counter() decorator
+@counter
+def foo():
+    print('calling foo()')
+
+foo()
+foo()
+
+print('foo() was called {} times.'.format(foo.count))
+
+#%% 4.2 Decorators and metadata
+def sleep_n_seconds(n=10):
+    """Pause processing for n sec"""
+    time.sleep(n)
+
+print(sleep_n_seconds.__doc__)
+print(sleep_n_seconds.__name__)
+print(sleep_n_seconds.__defaults__)
+
+@timer
+def sleep_n_seconds(n=10):
+    """Pause processing for n sec"""
+    time.sleep(n)
+
+print(sleep_n_seconds.__doc__)
+print(sleep_n_seconds.__name__)
+print(sleep_n_seconds.__defaults__)
+
+#%%
+from functools import wraps
+
+def timer(func):
+    """A decorator that prints how long a function took to run.
+
+    :arg
+        func (callable): The function being decorated.
+
+    :returns
+        callable: The decorated function.
+    """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        t_start = time.time()
+        result = func(*args, **kwargs)
+        t_total = time.time() - t_start
+        print('{} took {}s'.format(func.__name__, t_total))
+        return result
+    return wrapper
+
+@timer
+def sleep_n_seconds(n=10):
+    """Pause processing for n sec"""
+    time.sleep(n)
+
+print(sleep_n_seconds.__doc__)
+print(sleep_n_seconds.__name__)
+print(sleep_n_seconds.__defaults__)
+sleep_n_seconds.__wrapped__
+
+#%%
+def add_hello(func):
+    def wrapper(*args, **kwargs):
+        print('Hello')
+        return func(*args, **kwargs)
+    return wrapper
+
+# Decorate print_sum() with the add_hello() decorator
+@add_hello
+def print_sum(a, b):
+    """Adds two numbers and prints the sum"""
+    print(a + b)
+
+print_sum(10, 20)
+print_sum_docstring = print_sum.__doc__
+print(print_sum_docstring)
+
+#%%
+def add_hello(func):
+    # Add a docstring to wrapper
+    def wrapper(*args, **kwargs):
+        """Print 'hello' and then call the decorated function."""
+        print('Hello')
+        return func(*args, **kwargs)
+    return wrapper
+
+@add_hello
+def print_sum(a, b):
+    """Adds two numbers and prints the sum"""
+    print(a + b)
+
+print_sum(10, 20)
+print_sum_docstring = print_sum.__doc__
+print(print_sum_docstring)
+
+#%%
+# Import the function you need to fix the problem
+from functools import wraps
+
+def add_hello(func):
+    def wrapper(*args, **kwargs):
+        """Print 'hello' and then call the decorated function."""
+        print('Hello')
+        return func(*args, **kwargs)
+    return wrapper
+
+@add_hello
+def print_sum(a, b):
+    """Adds two numbers and prints the sum"""
+    print(a + b)
+
+print_sum(10, 20)
+print_sum_docstring = print_sum.__doc__
+print(print_sum_docstring)
+
+#%%
+from functools import wraps
+
+def add_hello(func):
+    # Decorate wrapper() so that it keeps func()'s metadata
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        """Print 'hello' and then call the decorated function."""
+        print('Hello')
+        return func(*args, **kwargs)
+    return wrapper
+
+@add_hello
+def print_sum(a, b):
+    """Adds two numbers and prints the sum"""
+    print(a + b)
+
+print_sum(10, 20)
+print_sum_docstring = print_sum.__doc__
+print(print_sum_docstring)
+
+#%%
+def check_everything(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        check_inputs(*args, **kwargs)
+        result = func(*args, **kwargs)
+        check_outputs(result)
+        return result
+    return wrapper
+
+@check_everything
+def duplicate(my_list):
+    """Return a new list that repeats the input twice"""
+    return my_list + my_list
+
+t_start = time.time()
+duplicated_list = duplicate(list(range(50)))
+t_end = time.time()
+decorated_time = t_end - t_start
+
+t_start = time.time()
+# Call the original function instead of the decorated one
+duplicated_list = duplicate.__wrapped__(list(range(50)))
+t_end = time.time()
+undecorated_time = t_end - t_start
+
+print('Decorated time: {:.5f}s'.format(decorated_time))
+print('Undecorated time: {:.5f}s'.format(undecorated_time))
+
+#%% 4.3 Decorators that take arguments
+def run_three_times(func):(func):
+    def wrapper(*args, **kwargs):
+        for i in range(3):
+            func(*args, **kwargs)
+    return wrapper
+
+@run_three_times
+def print_sum(a, b):
+    print(a + b)
+
+print_sum(3, 5)
+
+#%%
+def run_n_times(n):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for i in range(n):
+                func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@run_n_times(5)
+def print_sum(a, b):
+    print(a + b)
+
+print_sum(3, 5)
+
+#%%
+# Make print_sum() run 10 times with the run_n_times() decorator
+@run_n_times(10)
+def print_sum(a, b):
+    print(a + b)
+
+print_sum(15, 20)
+
+#%%
+# Use run_n_times() to create the run_five_times() decorator
+run_five_times = run_n_times(5)
+
+@run_five_times
+def print_sum(a, b):
+    print(a + b)
+
+print_sum(4, 100)
+
+#%%
+# Modify the print() function to always run 20 times
+print = run_n_times(20)(print)
+
+print('What is happening?!?!')
+
+#%%
+def html(open_tag, close_tag):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            msg = func(*args, **kwargs)
+            return '{}{}{}'.format(open_tag, msg, close_tag)
+        # Return the decorated function
+        return wrapper
+    # Return wrapper decorator
+    return decorator
+
+#%%
+# Make hello() return bolded text
+@html('<b>', '</b>')
+def hello(name):
+    return 'Hello {}!'.format(name)
+
+print(hello('Alice'))
+
+#%%
+# Make goodbye() return italicized text
+@html('<i>', '</i>')
+def goodbye(name):
+    return 'Goodbye {}.'.format(name)
+
+print(goodbye('Alice'))
+
+#%%
+# Wrap the result of hello_goodbye() in <div> and </div>
+@html('<div>', '</div>')
+def hello_goodbye(name):
+    return '\n{}\n{}\n'.format(hello(name), goodbye(name))
+
+print(hello_goodbye('Alice'))
+
+#%% 4.4 Timeout(): a real world example
+import signal
+
+def raise_timeout(*args, **kwargs):
+    raise TimeoutError()
+signal.signal(signalnum=signal.SIGALRM, hadler=raise_timeout)
+signal.alarm(5)
+
+def timeout_in_5s(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        signal.alarm(5)
+        try:
+            return func(*args, **kwargs)
+        finally:
+            signal.alarm(0)
+    return wrapper
+
+@timeout_in_5s
+def foo():
+    time.sleep(10)
+    print('foo!')
+
+foo()
+
+#%%
+def timeout(n_seconds):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwarg):
+            signal.alarm(n_seconds)
+            try:
+                return func(*args, **kwargs)
+            finally:
+                signal.alarm(0)
+        return wrapper
+    return decorator
+
+@timeout(5)
+def foo():
+    time.sleep(10)
+    print('foo!')
+
+@timeout(20)
+def bar():
+    time.sleep(10)
+    print('foo!')
+
+foo()
+bar()
+
+#%%
+def tag(*tags):
+    # Define a new decorator, named "decorator", to return
+    def decorator(func):
+        # Ensure the decorated function keeps its metadata
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # Call the function being decorated and return the result
+            return func(*args, **kwargs)
+        wrapper.tags = tags
+        return wrapper
+    # Return the new decorator
+    return decorator
+
+@tag('test', 'this is a tag')
+def foo():
+    pass
+
+print(foo.tags)
+
+#%%
+def returns_dict(func):
+    # Complete the returns_dict() decorator
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        assert type(result) == dict
+        return result
+    return wrapper
+
+@returns_dict
+def foo(value):
+    return value
+
+try:
+    print(foo([1,2,3]))
+except AssertionError:
+    print('foo() did not return a dict!')
+
+#%%
+def returns(return_type):
+    # Complete the returns() decorator
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            assert type(result) == return_type
+            return result
+        return wrapper
+    return decorator
+
+@returns(dict)
+def foo(value):
+    return value
+
+try:
+    print(foo([1,2,3]))
+except AssertionError:
+    print('foo() did not return a dict!')

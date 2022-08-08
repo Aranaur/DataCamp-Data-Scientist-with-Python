@@ -148,3 +148,7 @@ print('Single full-term mean:', single_full_term_weight.mean())
 # Compute birth weight for multiple full-term babies
 mult_full_term_weight = birth_weight[full_term & ~single]
 print('Multiple full-term mean:', mult_full_term_weight.mean())
+
+#%% 2. Distributions
+
+#%% 2.1 Probability mass functions

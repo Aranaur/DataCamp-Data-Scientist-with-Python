@@ -374,6 +374,7 @@ plt.xlabel('log10 of realinc')
 plt.ylabel('PDF')
 plt.show()
 
+
 #%% 3. Relationships
 
 #%% 3.1 Exploring relationships

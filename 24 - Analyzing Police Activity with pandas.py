@@ -95,3 +95,70 @@ print(ri.columns)
 #%% 2. Exploring the relationship between gender and policing
 
 #%% 2.1 Do the genders commit different violations?
+ri.stop_outcome.value_counts()
+ri.stop_outcome.value_counts().sum()
+ri.shape
+
+ri.stop_outcome.value_counts(normalize=True)
+
+ri.driver_race.value_counts()
+
+white = ri[ri.driver_race == 'White']
+white.shape
+white.stop_outcome.value_counts(normalize=True)
+
+asian = ri[ri.driver_race == 'Asian']
+asian.stop_outcome.value_counts(normalize=True)
+
+#%%
+# Count the unique values in 'violation'
+print(ri.violation.value_counts())
+
+# Express the counts as proportions
+print(ri.violation.value_counts(normalize=True))
+
+#%%
+# Create a DataFrame of female drivers
+female = ri[ri.driver_gender == 'F']
+
+# Create a DataFrame of male drivers
+male = ri[ri.driver_gender == 'M']
+
+# Compute the violations by female drivers (as proportions)
+print(female.violation.value_counts(normalize=True))
+
+# Compute the violations by male drivers (as proportions)
+print(male.violation.value_counts(normalize=True))
+
+#%% 2.2 Does gender affect who gets a ticket for speeding?
+female_and_arrested = ri[(ri.driver_gender == 'F') &
+                         (ri.is_arrested == True)]
+female_and_arrested.shape
+
+female_or_arrested = ri[(ri.driver_gender == 'F') |
+                         (ri.is_arrested == True)]
+female_or_arrested.shape
+
+#%%
+# Create a DataFrame of female drivers stopped for speeding
+female_and_speeding = ri[(ri.driver_gender == 'F') & (ri.violation_raw == 'Speeding')]
+
+# Create a DataFrame of male drivers stopped for speeding
+male_and_speeding = ri[(ri.driver_gender == 'M') & (ri.violation_raw == 'Speeding')]
+
+# Compute the stop outcomes for female drivers (as proportions)
+print(female_and_speeding.stop_outcome.value_counts(normalize=True))
+
+# Compute the stop outcomes for male drivers (as proportions)
+print(male_and_speeding.stop_outcome.value_counts(normalize=True))
+
+
+#%% 2.3
+ri.isnull().sum()
+
+ri.is_arrested.value_counts(normalize=True)
+ri.is_arrested.dtype
+ri.is_arrested.mean()
+
+ri.district.unique()
+ri[ri.district == 'Zone K1'].is_arrested.mean()

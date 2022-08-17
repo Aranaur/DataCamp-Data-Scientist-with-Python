@@ -6,6 +6,9 @@ import statistics
 from scipy.stats import iqr
 from scipy.stats import uniform
 from scipy.stats import binom
+from scipy.stats import norm
+from scipy.stats import poisson
+from scipy.stats import expon
 
 amir_deals = pd.read_csv('data/25/amir_deals.csv')
 food_consumption = pd.read_csv('data/25/food_consumption.csv')
@@ -378,3 +381,307 @@ print(won_35pct)
 #%% 3 More Distributions and the Central Limit Theorem
 
 #%% 3.1 The normal distribution
+# 1 sd = 68%
+# 2 sd = 95%
+# 3 sd = 99.7%
+
+# How many women are shorter then 154cm?
+# what, mean, sd
+norm.cdf(154, 161, 7)
+
+# How many women are taller then 154cm?
+1 - norm.cdf(154, 161, 7)
+
+# Percent of women are 154-157cm?
+norm.cdf(157, 161, 7) - norm.cdf(154, 161, 7)
+
+# What height are 90% of women shorter then?
+norm.ppf(0.9, 161, 7)
+
+# What height are 90% of women taller then?
+norm.ppf((1-0.9), 161, 7)
+
+# Generator norm dist
+norm.rvs(161, 7, size=10)
+
+#%%
+# Histogram of amount with 10 bins and show plot
+plt.hist(amir_deals['amount'], bins=10)
+plt.show()
+
+# Histogram of amount with 10 bins and show plot
+amir_deals.hist('amount', bins=10)
+plt.show()
+
+# Histogram of amount with 10 bins and show plot
+amir_deals.amount.hist(bins=10)
+plt.show()
+
+# Histogram of amount with 10 bins and show plot
+amir_deals['amount'].hist(bins=10)
+plt.show()
+
+#%%
+# Probability of deal < 7500
+prob_less_7500 = norm.cdf(7500, 5000, 2000)
+
+print(prob_less_7500)
+
+#%%
+# Probability of deal > 1000
+prob_over_1000 = 1 - norm.cdf(1000, 5000, 2000)
+
+print(prob_over_1000)
+
+#%%
+# Probability of deal between 3000 and 7000
+prob_3000_to_7000 = norm.cdf(7000, 5000, 2000) - norm.cdf(3000, 5000, 2000)
+
+print(prob_3000_to_7000)
+
+#%%
+# Calculate amount that 25% of deals will be less than
+pct_25 = norm.ppf(0.25, 5000, 2000)
+
+print(pct_25)
+
+#%%
+# Calculate new average amount
+new_mean = 5000 * 1.2
+
+# Calculate new standard deviation
+new_sd = 2000 * 1.3
+
+# Simulate 36 new sales
+new_sales = norm.rvs(new_mean, new_sd, size=36)
+
+# Create histogram and show
+plt.hist(new_sales)
+plt.show()
+
+#%% 3.2 The central limit theorem
+die = pd.Series([1, 2, 3, 4, 5, 6])
+# Roll 5 times
+samp_5 = die.sample(5, replace=True)
+print(samp_5)
+
+np.mean(samp_5)
+
+#%%
+sample_means = []
+for i in range(10):
+    samp_5 = die.sample(5, replace=True)
+    sample_means.append(np.mean(samp_5))
+
+sample_means
+
+plt.hist(sample_means)
+plt.show()
+
+#%%
+sample_means = []
+for i in range(100):
+    samp_5 = die.sample(5, replace=True)
+    sample_means.append(np.mean(samp_5))
+
+plt.hist(sample_means)
+plt.show()
+
+#%%
+sample_means = []
+for i in range(1000):
+    samp_5 = die.sample(5, replace=True)
+    sample_means.append(np.mean(samp_5))
+
+plt.hist(sample_means)
+plt.show()
+
+np.mean(sample_means)
+
+#%%
+sample_sds = []
+for i in range(1000):
+    samp_5 = die.sample(5, replace=True)
+    sapmle_sds.append(np.std(samp_5))
+
+plt.hist(sample_sds)
+plt.show()
+
+#%%
+sales_team = pd.Series(['Amir', 'Brian', 'Claire', 'Damian'])
+sales_team.sample(10, replace=True)
+
+#%%
+# Create a histogram of num_users and show
+amir_deals['num_users'].hist()
+plt.show()
+
+#%%
+# Set seed to 104
+np.random.seed(104)
+
+# Sample 20 num_users with replacement from amir_deals
+samp_20 = amir_deals['num_users'].sample(20, replace=True)
+
+# Take mean of samp_20
+print(np.mean(samp_20))
+
+#%%
+# Set seed to 104
+np.random.seed(104)
+
+# Sample 20 num_users with replacement from amir_deals and take mean
+samp_20 = amir_deals['num_users'].sample(20, replace=True)
+np.mean(samp_20)
+
+sample_means = []
+# Loop 100 times
+for i in range(100):
+    # Take sample of 20 num_users
+    samp_20 = amir_deals['num_users'].sample(20, replace=True)
+    # Calculate mean of samp_20
+    samp_20_mean = np.mean(samp_20)
+    # Append samp_20_mean to sample_means
+    sample_means.append(samp_20_mean)
+
+print(sample_means)
+
+#%%
+# Set seed to 104
+np.random.seed(104)
+
+sample_means = []
+# Loop 100 times
+for i in range(100):
+    # Take sample of 20 num_users
+    samp_20 = amir_deals['num_users'].sample(20, replace=True)
+    # Calculate mean of samp_20
+    samp_20_mean = np.mean(samp_20)
+    # Append samp_20_mean to sample_means
+    sample_means.append(samp_20_mean)
+
+# Convert to Series and plot histogram
+sample_means_series = pd.Series(sample_means)
+sample_means_series.hist()
+# Show plot
+plt.show()
+
+#%%
+# Set seed to 321
+np.random.seed(321)
+
+sample_means = []
+# Loop 30 times to take 30 means
+for i in range(30):
+    # Take sample of size 20 from num_users col of all_deals with replacement
+    cur_sample = all_deals['num_users'].sample(20, replace=True)
+    # Take mean of cur_sample
+    cur_mean = np.mean(cur_sample)
+    # Append cur_mean to sample_means
+    sample_means.append(cur_mean)
+
+# Print mean of sample_means
+print(np.mean(sample_means))
+
+# Print mean of num_users in amir_deals
+print(amir_deals['num_users'].mean())
+
+#%% 3.3 The Poisson distribution
+# P(5) in lambda 8
+poisson.pmf(5, 8)
+
+# P(<=5) in lambda 8
+poisson.cdf(5, 8)
+
+# P(>5) in lambda 8
+1 - poisson.cdf(5, 8)
+
+# P(>5) in lambda 10
+1 - poisson.cdf(5, 10)
+
+# Random Poisson
+poisson.rvs(8, size=10)
+
+#%%
+# Import poisson from scipy.stats
+from scipy.stats import poisson
+
+# Probability of 5 responses
+prob_5 = poisson.pmf(5, 4)
+
+print(prob_5)
+
+#%%
+# Import poisson from scipy.stats
+from scipy.stats import poisson
+
+# Probability of 5 responses
+prob_coworker = poisson.pmf(5, 5.5)
+
+print(prob_coworker)
+
+#%%
+# Import poisson from scipy.stats
+from scipy.stats import poisson
+
+# Probability of 2 or fewer responses
+prob_2_or_less = poisson.cdf(2, 4)
+
+print(prob_2_or_less)
+
+#%%
+# Import poisson from scipy.stats
+from scipy.stats import poisson
+
+# Probability of > 10 responses
+prob_over_10 = 1 - poisson.cdf(10, 4)
+
+print(prob_over_10)
+
+#%% 3.3 More probability distributions
+# Exp dist
+# lambda - time between action
+# 1 / lambda = 1 req per min
+
+# P(wait < 1min)
+expon.cdf(1, scale=0.5)
+
+# P(wait > 3min)
+1 - expon.cdf(3, scale=0.5)
+
+# P(1min < wait < 3min)
+expon.cdf(3, scale=0.5) - expon.cdf(1, scale=0.5)
+
+#%%
+# Stud, t-dist
+
+# Log-normal dist
+# Length of chess games
+# Adult blood pressure
+# Num of hospitalization
+
+#%%
+# Import expon from scipy.stats
+from scipy.stats import expon
+
+# Print probability response takes < 1 hour
+print(expon.cdf(1, scale=2.5))
+
+#%%
+# Import expon from scipy.stats
+from scipy.stats import expon
+
+# Print probability response takes > 4 hours
+print(1 - expon.cdf(4, scale=2.5))
+
+#%%
+# Import expon from scipy.stats
+from scipy.stats import expon
+
+# Print probability response takes 3-4 hours
+print(expon.cdf(4, scale=2.5) - expon.cdf(3, scale=2.5))
+
+#%% 4. Correlation and Experimental Design
+
+
+#%% 4.1

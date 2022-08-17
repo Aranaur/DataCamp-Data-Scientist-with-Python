@@ -9,6 +9,7 @@ from scipy.stats import binom
 from scipy.stats import norm
 from scipy.stats import poisson
 from scipy.stats import expon
+import seaborn as sns
 
 amir_deals = pd.read_csv('data/25/amir_deals.csv')
 food_consumption = pd.read_csv('data/25/food_consumption.csv')
@@ -683,5 +684,99 @@ print(expon.cdf(4, scale=2.5) - expon.cdf(3, scale=2.5))
 
 #%% 4. Correlation and Experimental Design
 
-
 #%% 4.1
+sns.scatterplot(x='gdp_per_cap',
+                y='life_exp',
+                data=world_happiness)
+
+sns.lmplot(x='gdp_per_cap',
+           y='life_exp',
+           data=world_happiness,
+           ci=None)
+
+world_happiness['gdp_per_cap'].corr(world_happiness['life_exp'])
+
+#%%
+# Create a scatterplot of happiness_score vs. life_exp and show
+sns.scatterplot(x='life_exp',
+                y='happiness_score',
+                data=world_happiness)
+
+# Show plot
+plt.show()
+
+#%%
+# Create scatterplot of happiness_score vs life_exp with trendline
+sns.lmplot(x='life_exp',
+           y='happiness_score',
+           data=world_happiness,
+           ci=None)
+# Show plot
+plt.show()
+
+#%%
+# Create scatterplot of happiness_score vs life_exp with trendline
+sns.lmplot(x='life_exp', y='happiness_score', data=world_happiness, ci=None)
+
+# Show plot
+plt.show()
+
+# Correlation between life_exp and happiness_score
+cor = world_happiness['life_exp'].corr(world_happiness['happiness_score'])
+
+print(cor)
+
+#%% 4.2 Correlation caveats
+world_happiness['log_gdp_per_cap'] = np.log(world_happiness['gdp_per_cap'])
+
+sns.scatterplot(x='log_gdp_per_cap',
+                y='life_exp',
+                data=world_happiness)
+plt.show()
+
+world_happiness['log_gdp_per_cap'].corr(world_happiness['life_exp'])
+
+#%%
+# Scatterplot of gdp_per_cap and life_exp
+sns.scatterplot(x='gdp_per_cap',
+                y='life_exp',
+                data=world_happiness)
+
+# Show plot
+plt.show()
+
+#%%
+# Scatterplot of happiness_score vs. gdp_per_cap
+sns.scatterplot(x='gdp_per_cap',
+                y='happiness_score',
+                data=world_happiness)
+plt.show()
+
+# Calculate correlation
+cor = world_happiness['happiness_score'].corr(world_happiness['gdp_per_cap'])
+print(cor)
+
+#%%
+# Create log_gdp_per_cap column
+world_happiness['log_gdp_per_cap'] = np.log(world_happiness['gdp_per_cap'])
+
+# Scatterplot of log_gdp_per_cap and happiness_score
+sns.scatterplot(x='log_gdp_per_cap',
+                y='happiness_score',
+                data=world_happiness)
+plt.show()
+
+# Calculate correlation
+cor = world_happiness['log_gdp_per_cap'].corr(world_happiness['happiness_score'])
+print(cor)
+
+#%%
+# Scatterplot of grams_sugar_per_day and happiness_score
+sns.scatterplot(x='grams_sugar_per_day', y='happiness_score', data=world_happiness)
+plt.show()
+
+# Correlation between grams_sugar_per_day and happiness_score
+cor = world_happiness['grams_sugar_per_day'].corr(world_happiness['happiness_score'])
+print(cor)
+
+#%% 4.2 Design of experiments

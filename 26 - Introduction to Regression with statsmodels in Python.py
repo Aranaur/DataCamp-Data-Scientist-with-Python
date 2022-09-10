@@ -558,3 +558,79 @@ plt.ylabel("Sqrt of abs val of stdized residuals")
 plt.show()
 
 #%% 3.3 Outliers, leverage, and influence
+roach = fish[fish['species'] == 'Roach']
+roach.head()
+
+sns.regplot(x='length_cm',
+            y='mass_g',
+            data=roach,
+            ci=None)
+plt.show()
+
+roach['extreme_l'] = ((roach['length_cm'] < 15) | (roach['length_cm'] > 26))
+
+fig = plt.figure()
+sns.regplot(x='length_cm',
+            y='mass_g',
+            data=roach,
+            ci=None)
+sns.scatterplot(x='length_cm',
+                y='mass_g',
+                data=roach,
+                hue='extreme_l')
+plt.show()
+
+roach['extreme_m'] = roach['mass_g'] < 1
+
+fig = plt.figure()
+sns.regplot(x='length_cm',
+            y='mass_g',
+            data=roach,
+            ci=None)
+sns.scatterplot(x='length_cm',
+                y='mass_g',
+                data=roach,
+                hue='extreme_l',
+                style='extreme_m')
+plt.show()
+
+mdl_roach = ols('mass_g ~ length_cm', data=roach).fit()
+summary_roach = mdl_roach.get_influence().summary_frame()
+roach['leverage'] = summary_roach['hat_diag']
+roach.head()
+
+roach['cooks_dist'] = summary_roach['cooks_d']
+roach.head()
+
+roach.sort_values('cooks_dist', ascending=False)
+
+roach_not_short = roach[roach['length_cm'] != 12.9]
+sns.regplot(x='length_cm',
+            y='mass_g',
+            data=roach,
+            ci=None,
+            line_kws={'color': 'g'})
+sns.regplot(x='length_cm',
+            y='mass_g',
+            data=roach_not_short,
+            ci=None,
+            line_kws={'color': 'r'})
+plt.show()
+
+#%%
+# Create summary_info
+summary_info = mdl_price_vs_dist.get_influence().summary_frame()
+
+# Add the hat_diag column to taiwan_real_estate, name it leverage
+taiwan_real_estate["leverage"] = summary_info["hat_diag"]
+
+# Add the cooks_d column to taiwan_real_estate, name it cooks_dist
+taiwan_real_estate['cooks_dist'] = summary_info['cooks_d']
+
+# Sort taiwan_real_estate by cooks_dist in descending order and print the head.
+print(taiwan_real_estate.sort_values('cooks_dist', ascending=False).head())
+
+
+#%% 4. Simple Logistic Regression Modeling
+
+#%% 4.1 Why you need logistic regression

@@ -634,3 +634,268 @@ print(taiwan_real_estate.sort_values('cooks_dist', ascending=False).head())
 #%% 4. Simple Logistic Regression Modeling
 
 #%% 4.1 Why you need logistic regression
+churn.head()
+
+mdl_churn_vs_recency_lm = ols('has_churned ~ time_since_last_purchase', data=churn).fit()
+mdl_churn_vs_recency_lm.params
+
+intercept, slope = mdl_churn_vs_recency_lm.params
+
+sns.scatterplot(x='time_since_last_purchase',
+                y='has_churned',
+                data=churn)
+plt.axline(xy1=(0, intercept), slope=slope)
+plt.xlim(-10, 10)
+plt.ylim(-0.2, 1.2)
+plt.show()
+
+from statsmodels.formula.api import logit
+mdl_churn_vs_recency_logit = logit('has_churned ~ time_since_last_purchase', data=churn).fit()
+mdl_churn_vs_recency_logit.params
+
+sns.regplot(x='time_since_last_purchase',
+            y='has_churned',
+            data=churn,
+            ci=None,
+            logistic=True)
+plt.axline(xy1=(0, intercept), slope=slope, color='black')
+plt.show()
+
+#%%
+sns.displot(data=churn, x='time_since_last_purchase', col='has_churned')
+plt.show()
+sns.displot(data=churn, x='time_since_first_purchase', col='has_churned')
+plt.show()
+
+#%%
+# Draw a linear regression trend line and a scatter plot of time_since_first_purchase vs. has_churned
+sns.regplot(x="time_since_first_purchase",
+            y="has_churned",
+            data=churn,
+            ci=None,
+            line_kws={"color": "red"})
+
+# Draw a logistic regression trend line and a scatter plot of time_since_first_purchase vs. has_churned
+sns.regplot(x='time_since_first_purchase',
+            y='has_churned',
+            data=churn,
+            ci=None,
+            logistic=True,
+            line_kws={"color": "blue"})
+
+plt.show()
+
+#%%
+# Import logit
+from statsmodels.formula.api import logit
+
+# Fit a logistic regression of churn vs. length of relationship using the churn dataset
+mdl_churn_vs_relationship = logit('has_churned ~ time_since_first_purchase', data=churn).fit()
+
+# Print the parameters of the fitted model
+print(mdl_churn_vs_relationship.params)
+
+#%% 4.2 Predictions and odds ratios
+mdl_recency = logit('has_churned ~ time_since_last_purchase', data=churn).fit()
+
+explanatory_data = pd.DataFrame(
+    {'time_since_last_purchase': np.arange(-1, 6.25, 0.25)}
+)
+
+prediction_data = explanatory_data.assign(has_churned=mdl_recency.predict(explanatory_data))
+
+sns.regplot(x='time_since_last_purchase',
+            y='has_churned',
+            data=churn,
+            ci=None,
+            logistic=True)
+sns.scatterplot(x='time_since_last_purchase',
+                y='has_churned',
+                data=prediction_data,
+                color='r')
+plt.show()
+
+prediction_data['most_likely_outcome'] = np.round(prediction_data['has_churned'])
+
+sns.regplot(x='time_since_last_purchase',
+            y='has_churned',
+            data=churn,
+            ci=None,
+            logistic=True)
+sns.scatterplot(x='time_since_last_purchase',
+                y='most_likely_outcome',
+                data=prediction_data,
+                color='r')
+plt.show()
+
+prediction_data['odds_ratio'] = prediction_data['has_churned'] / (1 - prediction_data['has_churned'])
+
+sns.lineplot(x='time_since_last_purchase',
+             y='odds_ratio',
+             data=prediction_data)
+plt.axhline(y=1, linestyle='dotted')
+plt.show()
+
+sns.lineplot(x='time_since_last_purchase',
+             y='odds_ratio',
+             data=prediction_data)
+plt.axhline(y=1, linestyle='dotted')
+plt.yscale('log')
+plt.show()
+
+prediction_data['log_odds_ratio'] = np.log(prediction_data['odds_ratio'])
+
+#%%
+# Create prediction_data
+prediction_data = explanatory_data.assign(
+    has_churned=mdl_churn_vs_relationship.predict(explanatory_data)
+)
+
+# Print the head
+print(prediction_data.head())
+#%%
+# Create prediction_data
+prediction_data = explanatory_data.assign(
+    has_churned = mdl_churn_vs_relationship.predict(explanatory_data)
+)
+
+fig = plt.figure()
+
+# Create a scatter plot with logistic trend line
+sns.regplot(x='time_since_first_purchase', y='has_churned', ci=None, logistic=True, data=churn)
+
+# Overlay with prediction_data, colored red
+sns.scatterplot(x='time_since_first_purchase',
+                y='has_churned',
+                data=prediction_data,
+                color='r')
+
+plt.show()
+
+#%%
+# Update prediction data by adding most_likely_outcome
+prediction_data["most_likely_outcome"] = np.round(prediction_data["has_churned"])
+
+fig = plt.figure()
+
+# Create a scatter plot with logistic trend line (from previous exercise)
+sns.regplot(x="time_since_first_purchase",
+            y="has_churned",
+            data=churn,
+            ci=None,
+            logistic=True)
+
+# Overlay with prediction_data, colored red
+sns.scatterplot(x='time_since_first_purchase',
+                y='most_likely_outcome',
+                data=prediction_data,
+                color='r')
+
+plt.show()
+
+#%%
+# Update prediction data with odds_ratio
+prediction_data["odds_ratio"] = prediction_data["has_churned"] / (1 - prediction_data["has_churned"])
+
+fig = plt.figure()
+
+# Create a line plot of odds_ratio vs time_since_first_purchase
+sns.lineplot(x='time_since_first_purchase',
+             y='odds_ratio',
+             data=prediction_data)
+
+# Add a dotted horizontal line at odds_ratio = 1
+plt.axhline(y=1, linestyle="dotted")
+
+plt.show()
+#%%
+# Update prediction data with log_odds_ratio
+prediction_data["log_odds_ratio"] = np.log(prediction_data["odds_ratio"])
+
+fig = plt.figure()
+
+# Update the line plot: log_odds_ratio vs. time_since_first_purchase
+sns.lineplot(x="time_since_first_purchase",
+             y="log_odds_ratio",
+             data=prediction_data)
+
+# Add a dotted horizontal line at log_odds_ratio = 0
+plt.axhline(y=0, linestyle="dotted")
+plt.yscale('log')
+plt.show()
+
+#%% 4.2 Quantifying logistic regression fit
+actual_response = churn['has_churned']
+predicted_response = np.round(mdl_recency.predict())
+outcomes = pd.DataFrame(
+    {'actual_response': actual_response,
+     'predicted_response': predicted_response}
+)
+print(outcomes.value_counts(sort=False))
+
+conf_matrix = mdl_recency.pred_table()
+print(conf_matrix)
+
+from statsmodels.graphics.mosaicplot import mosaic
+mosaic(conf_matrix)
+
+TN = conf_matrix[0, 0]
+TP = conf_matrix[1, 1]
+FN = conf_matrix[1, 0]
+FP = conf_matrix[0, 1]
+
+acc = (TN + TP) / (TN + TP + FN + FP)
+acc
+
+sens = TP / (FN + TP)
+sens
+
+spec = TN / (TN + FP)
+spec
+
+#%%
+# Get the actual responses
+actual_response = churn['has_churned']
+
+# Get the predicted responses
+predicted_response = np.round(mdl_churn_vs_relationship.predict())
+
+# Create outcomes as a DataFrame of both Series
+outcomes = pd.DataFrame({'actual_response': actual_response,
+                         'predicted_response': predicted_response})
+
+# Print the outcomes
+print(outcomes.value_counts(sort = False))
+
+#%%
+# Import mosaic from statsmodels.graphics.mosaicplot
+from statsmodels.graphics.mosaicplot import mosaic
+
+# Calculate the confusion matrix conf_matrix
+conf_matrix = mdl_churn_vs_relationship.pred_table()
+
+# Print it
+print(conf_matrix)
+
+# Draw a mosaic plot of conf_matrix
+mosaic(conf_matrix)
+plt.show()
+
+#%%
+# Extract TN, TP, FN and FP from conf_matrix
+TN = conf_matrix[0, 0]
+TP = conf_matrix[1, 1]
+FN = conf_matrix[1, 0]
+FP = conf_matrix[0, 1]
+
+# Calculate and print the accuracy
+accuracy = (TN + TP) / (TN + TP + FN + FP)
+print("accuracy: ", accuracy)
+
+# Calculate and print the sensitivity
+sensitivity = TP / (FN + TP)
+print("sensitivity: ", sensitivity)
+
+# Calculate and print the specificity
+specificity = TN / (TN + FP)
+print("specificity: ", specificity)

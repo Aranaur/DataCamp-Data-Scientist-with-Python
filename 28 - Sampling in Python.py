@@ -366,4 +366,30 @@ population_mean = coffee_ratings['total_cup_points'].mean()
 sample_mean = coffee_ratings.sample(n=sample_size)['total_cup_points'].mean()
 rel_error_pct = 100 * abs(population_mean - sample_mean) / population_mean
 
+#%%
+# Generate a simple random sample of 50 rows, with seed 2022
+attrition_srs50 = attrition_pop.sample(n=50, random_state=2022)
 
+# Calculate the mean employee attrition in the sample
+mean_attrition_srs50 = attrition_srs50['Attrition'].mean()
+
+# Calculate the relative error percentage
+rel_error_pct50 = 100 * abs(attrition_pop['Attrition'].mean() - mean_attrition_srs50) / attrition_pop['Attrition'].mean()
+
+# Print rel_error_pct50
+print(rel_error_pct50)
+
+#%%
+# Generate a simple random sample of 100 rows, with seed 2022
+attrition_srs100 = attrition_pop.sample(n=100, random_state=2022)
+
+# Calculate the mean employee attrition in the sample
+mean_attrition_srs100 = attrition_srs100['Attrition'].mean()
+
+# Calculate the relative error percentage
+rel_error_pct100 = 100 * abs(attrition_pop['Attrition'].mean() - mean_attrition_srs100) / attrition_pop['Attrition'].mean()
+
+# Print rel_error_pct100
+print(rel_error_pct100)
+
+#%% 3.2 Baby back dist-rib-ution

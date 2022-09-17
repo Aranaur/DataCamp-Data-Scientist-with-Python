@@ -393,3 +393,30 @@ rel_error_pct100 = 100 * abs(attrition_pop['Attrition'].mean() - mean_attrition_
 print(rel_error_pct100)
 
 #%% 3.2 Baby back dist-rib-ution
+mean_cup_points_1000 = []
+for i in range(1000):
+    mean_cup_points_1000.append(
+        coffee_ratings.sample(n=30)['total_cup_points'].mean()
+    )
+
+print(mean_cup_points_1000)
+
+plt.hist(mean_cup_points_1000, bins=30)
+plt.show()
+
+#%%
+# Create an empty list
+mean_attritions = []
+# Loop 500 times to create 500 sample means
+for i in range(500):
+    mean_attritions.append(
+        attrition_pop.sample(n=60)['Attrition'].mean()
+    )
+
+# Create a histogram of the 500 sample means
+plt.hist(mean_attritions, bins=16)
+plt.show()
+
+#%% 3.3 Be our guess, put our samples to the test
+
+%timeit np.array(np.meshgrid(range(6), range(6))).reshape(2, 36).T

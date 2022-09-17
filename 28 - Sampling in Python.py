@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import itertools
 
 attrition_pop = pd.read_feather('data/28/attrition.feather')
 spotify_population = pd.read_feather('data/28/spotify_2000_2020.feather')
@@ -419,4 +420,80 @@ plt.show()
 
 #%% 3.3 Be our guess, put our samples to the test
 
-%timeit np.array(np.meshgrid(range(6), range(6))).reshape(2, 36).T
+dice = pd.DataFrame(np.array(np.meshgrid(range(1, 7), range(1, 7), range(1, 7), range(1, 7))).reshape(4, 1296).T)
+dice['mean_roll'] = (dice[0] + dice[1] + dice[2] + dice[3]) / 4
+
+dice['mean_roll'] = dice['mean_roll'].astype('category')
+dice['mean_roll'].value_counts(sort=False).plot(kind='bar')
+
+n_dice = list(range(1, 101))
+n_outcomes = []
+for n in n_dice:
+    n_outcomes.append(6**n)
+
+outcomes = pd.DataFrame(
+    {'n_dice': n_dice,
+     'n_outcomes': n_outcomes}
+)
+
+outcomes.plot(x='n_dice',
+              y='n_outcomes',
+              kind='scatter')
+plt.show()
+
+sample_size_1000 = []
+for i in range(1000):
+    sample_size_1000.append(
+        np.random.choice(list(range(1, 7)), size=4, replace=True).mean()
+    )
+print(sample_size_1000)
+
+plt.hist(sample_size_1000, bins=20)
+
+#%%
+def expand_grid(data_dict):
+    rows = itertools.product(*data_dict.values())
+    return pd.DataFrame.from_records(rows, columns=data_dict.keys())
+
+# Expand a grid representing 5 8-sided dice
+dice = expand_grid(
+    {'die1': list(range(1, 9)),
+     'die2': list(range(1, 9)),
+     'die3': list(range(1, 9)),
+     'die4': list(range(1, 9)),
+     'die5': list(range(1, 9))
+     })
+
+# Add a column of mean rolls and convert to a categorical
+dice['mean_roll'] = (dice['die1'] + dice['die2'] +
+                     dice['die3'] + dice['die4'] +
+                     dice['die5']) / 5
+dice['mean_roll'] = dice['mean_roll'].astype('category')
+
+# Draw a bar plot of mean_roll
+dice['mean_roll'].value_counts(sort=False).plot(kind='bar')
+plt.show()
+
+#%%
+# Sample one to eight, five times, with replacement
+five_rolls = np.random.choice(list(range(1, 9)), size=5, replace=True)
+
+# Print the mean of five_rolls
+print(five_rolls.mean())
+
+#%%
+# Replicate the sampling code 1000 times
+sample_means_1000 = []
+for i in range(1000):
+    sample_means_1000.append(
+        np.random.choice(list(range(1, 9)), size=5, replace=True).mean()
+    )
+
+# Print the first 10 entries of the result
+print(sample_means_1000[0:10])
+
+# Draw a histogram of sample_means_1000 with 20 bins
+plt.hist(sample_means_1000, bins=20)
+plt.show()
+
+#%% 3.4 Err on the side of Gaussian

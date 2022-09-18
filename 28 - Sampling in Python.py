@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 import itertools
+from scipy.stats import norm
 
 attrition_pop = pd.read_feather('data/28/attrition.feather')
 spotify_population = pd.read_feather('data/28/spotify_2000_2020.feather')
@@ -497,3 +498,176 @@ plt.hist(sample_means_1000, bins=20)
 plt.show()
 
 #%% 3.4 Err on the side of Gaussian
+
+coffee_ratings['total_cup_points'].std(ddof=0)
+
+#%%
+# Calculate the mean of the mean attritions for each sampling distribution
+mean_of_means_5 = np.mean(sampling_distribution_5)
+mean_of_means_50 = np.mean(sampling_distribution_50)
+mean_of_means_500 = np.mean(sampling_distribution_500)
+
+# Print the results
+print(mean_of_means_5)
+print(mean_of_means_50)
+print(mean_of_means_500)
+
+#%%
+# Calculate the std. dev. of the mean attritions for each sampling distribution
+sd_of_means_5 = np.std(sampling_distribution_5, ddof=1)
+sd_of_means_50 = np.std(sampling_distribution_50, ddof=1)
+sd_of_means_500 = np.std(sampling_distribution_500, ddof=1)
+
+# Print the results
+print(sd_of_means_5)
+print(sd_of_means_50)
+print(sd_of_means_500)
+
+#%% 4. Pull Your Data Up By Its Bootstraps
+
+#%% 4.1 This bears a striking resample-lance
+coffee_focus = coffee_ratings[['variety', 'country_of_origin', 'flavor']]
+coffee_focus = coffee_focus.reset_index()
+coffee_resamp = coffee_focus.sample(frac=1, replace=True)
+coffee_resamp['index'].value_counts()
+num_unique_coffees = len(coffee_resamp.drop_duplicates(subset='index'))
+len(coffee_ratings) - num_unique_coffees
+
+mean_flavors_1000 = []
+for i in range(1000):
+    mean_flavors_1000.append(
+        np.mean(coffee_ratings.sample(frac=1, replace=True)['flavor'])
+    )
+
+plt.hist(mean_flavors_1000)
+plt.show()
+
+#%%
+# Generate 1 bootstrap resample
+spotify_1_resample = spotify_sample.sample(frac=1, replace=True)
+
+# Print the resample
+print(spotify_1_resample)
+#%%
+# Generate 1 bootstrap resample
+spotify_1_resample = spotify_sample.sample(frac=1, replace=True)
+
+# Calculate mean danceability of resample
+mean_danceability_1 = np.mean(spotify_1_resample['danceability'])
+
+# Print the result
+print(mean_danceability_1)
+
+#%%
+# Replicate this 1000 times
+mean_danceability_1000 = []
+for i in range(1000):
+    mean_danceability_1000.append(
+        np.mean(spotify_sample.sample(frac=1, replace=True)['danceability'])
+    )
+
+# Print the result
+print(mean_danceability_1000)
+#%%
+# Replicate this 1000 times
+mean_danceability_1000 = []
+for i in range(1000):
+    mean_danceability_1000.append(
+        np.mean(spotify_sample.sample(frac=1, replace=True)['danceability'])
+    )
+
+# Draw a histogram of the resample means
+plt.hist(mean_danceability_1000)
+plt.show()
+
+#%% 4.2 A breath of fresh error
+# Pop std.dev = Std.Error * sqrt(Sample.size)
+
+mean_popularity_2000_samp = []
+
+# Generate a sampling distribution of 2000 replicates
+for i in range(2000):
+    mean_popularity_2000_samp.append(
+        # Sample 500 rows and calculate the mean popularity
+        spotify_population.sample(n=500)['popularity'].mean()
+    )
+
+# Print the sampling distribution results
+print(mean_popularity_2000_samp)
+#%%
+mean_popularity_2000_boot = []
+
+# Generate a bootstrap distribution of 2000 replicates
+for i in range(2000):
+    mean_popularity_2000_boot.append(
+        # Resample 500 rows and calculate the mean popularity
+        spotify_sample.sample(n=500, replace=True)['popularity'].mean()
+    )
+
+# Print the bootstrap distribution results
+print(mean_popularity_2000_boot)
+#%%
+# Calculate the population mean popularity
+pop_mean = np.mean(spotify_population['popularity'])
+
+# Calculate the original sample mean popularity
+samp_mean = np.mean(spotify_sample['popularity'])
+
+# Calculate the sampling dist'n estimate of mean popularity
+samp_distn_mean = np.mean(sampling_distribution)
+
+# Calculate the bootstrap dist'n estimate of mean popularity
+boot_distn_mean = np.mean(bootstrap_distribution)
+
+# Print the means
+print([pop_mean, samp_mean, samp_distn_mean, boot_distn_mean])
+
+#%%
+# Calculate the population std dev popularity
+pop_sd = spotify_population['popularity'].std(ddof=0)
+
+# Calculate the original sample std dev popularity
+samp_sd = spotify_sample['popularity'].std()
+
+# Calculate the sampling dist'n estimate of std dev popularity
+samp_distn_sd = np.std(sampling_distribution, ddof=1) * np.sqrt(5000)
+
+# Calculate the bootstrap dist'n estimate of std dev popularity
+boot_distn_sd = np.std(bootstrap_distribution, ddof=1) * np.sqrt(5000)
+
+# Print the standard deviations
+print([pop_sd, samp_sd, samp_distn_sd, boot_distn_sd])
+
+#%% 4.3 Venus infers
+np.quantile(coffee_boot_dustn, 0.025)
+np.quantile(coffee_boot_dustn, 0.975)
+
+norm.ppf(quantile, loc=0, scale=1)
+
+point_estimate = np.mean(coffee_boot_dist)
+std_error = np.std(coffee_boot_dist, ddof=1)
+
+lower = norm.ppf(0.025, loc=point_estimate, scale=std_error)
+upper = norm.ppf(0.975, loc=point_estimate, scale=std_error)
+print(lower, upper)
+#%%
+
+# Generate a 95% confidence interval using the quantile method
+lower_quant = np.quantile(bootstrap_distribution, 0.025)
+upper_quant = np.quantile(bootstrap_distribution, 0.975)
+
+# Print quantile method confidence interval
+print((lower_quant, upper_quant))
+#%%
+# Find the mean and std dev of the bootstrap distribution
+point_estimate = np.mean(bootstrap_distribution)
+standard_error = np.std(bootstrap_distribution, ddof=1)
+
+# Find the lower limit of the confidence interval
+lower_se = norm.ppf(0.025, loc=point_estimate, scale=standard_error)
+
+# Find the upper limit of the confidence interval
+upper_se = norm.ppf(0.975, loc=point_estimate, scale=standard_error)
+
+# Print standard error method confidence interval
+print((lower_se, upper_se))

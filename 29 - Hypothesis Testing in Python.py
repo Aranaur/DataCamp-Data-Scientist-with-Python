@@ -104,3 +104,11 @@ upper = np.quantile(late_shipments_boot_distn, 0.975)
 print((lower, upper))
 
 #%% 2. Pass Me ANOVA Glass of Iced t
+#%% Performing t-tests
+xbar = stack_overflow.groupby('age_first_code_cut')['converted_comp'].mean()
+s = stack_overflow.groupby('age_first_code_cut')['converted_comp'].std()
+n = stack_overflow.groupby('age_first_code_cut')['converted_comp'].count()
+
+numerator = xbar_child - xbar_adult
+denominator = np.sqrt(s_chind ** 2 / n_chind + s_adult ** 2 / n_adult)
+t_stat = numerator / denominator

@@ -37,3 +37,5 @@ knn.fit(X_train, y_train)
 
 # Print the accuracy
 print(knn.score(X_test, y_test))
+
+# %% 
